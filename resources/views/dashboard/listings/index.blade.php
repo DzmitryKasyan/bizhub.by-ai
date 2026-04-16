@@ -17,7 +17,8 @@ $typeLabels = [
 ];
 
 $statusConfig = [
-    'active'   => ['label' => 'Активно',      'class' => 'bg-green-100 text-green-700'],
+    'draft'    => ['label' => 'Черновики',     'class' => 'bg-gray-100 text-gray-500'],
+    'active'   => ['label' => 'Активно',       'class' => 'bg-green-100 text-green-700'],
     'pending'  => ['label' => 'На проверке',   'class' => 'bg-yellow-100 text-yellow-700'],
     'sold'     => ['label' => 'Продано',       'class' => 'bg-gray-100 text-gray-600'],
     'archived' => ['label' => 'Архив',         'class' => 'bg-gray-100 text-gray-400'],
@@ -76,7 +77,7 @@ $statusConfig = [
                 <tbody class="divide-y divide-gray-50">
                     @foreach($listings as $listing)
                         @php
-                            $status = $statusConfig[$listing->status] ?? ['label' => $listing->status, 'class' => 'bg-gray-100 text-gray-500'];
+                            $status = $statusConfig[$listing->status->value] ?? ['label' => $listing->status->label(), 'class' => 'bg-gray-100 text-gray-500'];
                         @endphp
                         <tr class="hover:bg-gray-50 transition-colors">
                             <!-- Title + Image -->
@@ -115,7 +116,7 @@ $statusConfig = [
                             <!-- Type -->
                             <td class="px-4 py-4">
                                 <span class="text-xs text-gray-600 whitespace-nowrap">
-                                    {{ $typeLabels[$listing->type] ?? $listing->type }}
+                                    {{ $listing->type->label() }}
                                 </span>
                             </td>
 

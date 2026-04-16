@@ -76,7 +76,7 @@
                         @endif
                     </div>
                     <div class="relative" x-data="{ showPassword: false }">
-                        <input :type="showPassword ? 'text' : 'password'"
+                        <input type="password" :type="showPassword ? 'text' : 'password'"
                                id="password"
                                name="password"
                                required

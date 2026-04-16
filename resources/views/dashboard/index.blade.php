@@ -127,21 +127,17 @@
                             <!-- Status -->
                             @php
                             $statusConfig = [
-                                'active'   => 'bg-green-100 text-green-700',
+                                'draft'    => 'bg-gray-100 text-gray-500',
                                 'pending'  => 'bg-yellow-100 text-yellow-700',
-                                'sold'     => 'bg-gray-100 text-gray-500',
+                                'active'   => 'bg-green-100 text-green-700',
+                                'sold'     => 'bg-blue-100 text-blue-600',
                                 'archived' => 'bg-gray-100 text-gray-400',
-                            ];
-                            $statusNames = [
-                                'active'   => 'Активно',
-                                'pending'  => 'На проверке',
-                                'sold'     => 'Продано',
-                                'archived' => 'Архив',
+                                'rejected' => 'bg-red-100 text-red-600',
                             ];
                             @endphp
                             <span class="flex-shrink-0 text-xs font-medium px-2.5 py-1 rounded-full
-                                         {{ $statusConfig[$listing->status] ?? 'bg-gray-100 text-gray-500' }}">
-                                {{ $statusNames[$listing->status] ?? $listing->status }}
+                                         {{ $statusConfig[$listing->status->value] ?? 'bg-gray-100 text-gray-500' }}">
+                                {{ $listing->status->label() }}
                             </span>
                         </div>
                     @endforeach

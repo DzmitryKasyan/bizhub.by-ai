@@ -252,6 +252,25 @@ class Listing extends Model implements HasMedia
         $this->increment('views_count');
     }
 
+    public function getMainImageAttribute(): ?string
+    {
+        $image = $this->relationLoaded('images')
+            ? $this->images->firstWhere('is_main', true) ?? $this->images->first()
+            : $this->hasMany(ListingImage::class)->where('is_main', true)->first()
+                ?? $this->hasMany(ListingImage::class)->orderBy('sort_order')->first();
+
+        return $image?->path;
+    }
+
+    public function getImagesArrayAttribute(): array
+    {
+        $images = $this->relationLoaded('images')
+            ? $this->images
+            : $this->hasMany(ListingImage::class)->orderBy('sort_order')->get();
+
+        return $images->pluck('path')->toArray();
+    }
+
     public function getFormattedPriceAttribute(): string
     {
         if (!$this->price) {

@@ -12,6 +12,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ListingController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Category;
 use Illuminate\Support\Facades\Route;
 
 // ─── Public Routes ─────────────────────────────────────────────────────────────
@@ -102,4 +103,12 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->prefix('api/v1')->name('api.')->group(function () {
     Route::post('/listings/{listing}/view', [ListingController::class, 'trackView'])->name('listings.view');
     Route::post('/listings/{listing}/favorite', [FavoriteController::class, 'toggle'])->name('listings.favorite');
+});
+
+Route::get('/api/subcategories', function () {
+    $subs = Category::where('parent_id', request('category_id'))
+        ->active()
+        ->ordered()
+        ->get(['id', 'name']);
+    return response()->json($subs);
 });

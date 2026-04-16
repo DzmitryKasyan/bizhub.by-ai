@@ -154,21 +154,19 @@ class CategorySeeder extends Seeder
             $children = $categoryData['children'] ?? [];
             unset($categoryData['children']);
 
-            $category = Category::create([
-                'name' => $categoryData['name'],
-                'icon' => $categoryData['icon'] ?? null,
-                'sort_order' => $sortOrder++,
-                'is_active' => true,
-            ]);
+            $category = Category::firstOrCreate(
+                ['name' => $categoryData['name'], 'parent_id' => null],
+                ['icon' => $categoryData['icon'] ?? null, 'sort_order' => $sortOrder, 'is_active' => true]
+            );
+            $sortOrder++;
 
             $childSortOrder = 1;
             foreach ($children as $childName) {
-                Category::create([
-                    'parent_id' => $category->id,
-                    'name' => $childName,
-                    'sort_order' => $childSortOrder++,
-                    'is_active' => true,
-                ]);
+                Category::firstOrCreate(
+                    ['name' => $childName, 'parent_id' => $category->id],
+                    ['sort_order' => $childSortOrder, 'is_active' => true]
+                );
+                $childSortOrder++;
             }
         }
 

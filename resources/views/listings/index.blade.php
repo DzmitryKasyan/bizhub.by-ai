@@ -224,8 +224,8 @@ $typeBadgeColors = [
                     @foreach($listings as $listing)
 
                     @php
-                    $badgeClass = $typeBadgeColors[$listing->type] ?? 'bg-gray-100 text-gray-700';
-                    $typeLabel  = $typeLabels[$listing->type] ?? $listing->type;
+                    $badgeClass = $typeBadgeColors[$listing->type->value] ?? 'bg-gray-100 text-gray-700';
+                    $typeLabel  = $listing->type->label();
                     @endphp
 
                     <article class="bg-white rounded-xl overflow-hidden border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all group">
@@ -274,7 +274,7 @@ $typeBadgeColors = [
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                                         </svg>
-                                        <span class="truncate">{{ $listing->location }}</span>
+                                        <span class="truncate">{{ $listing->location?->name }}</span>
                                     @endif
                                 </div>
                                 <div class="flex items-center gap-3 flex-shrink-0">

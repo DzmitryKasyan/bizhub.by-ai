@@ -94,27 +94,21 @@
                             Регистрация
                         </a>
                     @else
-                        <div class="relative" x-data="{ open: false }">
-                            <button @click="open = !open"
+                        <div class="relative" id="user-menu-wrap">
+                            <button onclick="toggleUserMenu()"
+                                    id="user-menu-btn"
                                     class="flex items-center gap-2 text-gray-700 hover:text-blue-600 font-medium text-sm transition-colors focus:outline-none">
                                 <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                                     <span class="text-blue-700 font-semibold text-sm">{{ substr(auth()->user()->name, 0, 1) }}</span>
                                 </div>
                                 <span>{{ auth()->user()->name }}</span>
-                                <svg class="w-4 h-4 transition-transform" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg id="user-menu-arrow" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                                 </svg>
                             </button>
-                            <div x-show="open"
-                                 @click.outside="open = false"
-                                 x-transition:enter="transition ease-out duration-100"
-                                 x-transition:enter-start="opacity-0 scale-95"
-                                 x-transition:enter-end="opacity-100 scale-100"
-                                 x-transition:leave="transition ease-in duration-75"
-                                 x-transition:leave-start="opacity-100 scale-100"
-                                 x-transition:leave-end="opacity-0 scale-95"
+                            <div id="user-menu-dropdown"
                                  class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50"
-                                 style="display: none;">
+                                 style="display:none;">
                                 <a href="{{ route('dashboard') }}"
                                    class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -298,5 +292,29 @@
     @livewireScripts
 
     @stack('scripts')
+
+    <script>
+    function toggleUserMenu() {
+        var menu = document.getElementById('user-menu-dropdown');
+        var arrow = document.getElementById('user-menu-arrow');
+        var isOpen = menu.style.display !== 'none';
+        if (isOpen) {
+            menu.style.display = 'none';
+            arrow.style.transform = '';
+        } else {
+            menu.style.display = 'block';
+            arrow.style.transform = 'rotate(180deg)';
+        }
+    }
+    document.addEventListener('click', function(e) {
+        var wrap = document.getElementById('user-menu-wrap');
+        var menu = document.getElementById('user-menu-dropdown');
+        if (wrap && menu && !wrap.contains(e.target)) {
+            menu.style.display = 'none';
+            var arrow = document.getElementById('user-menu-arrow');
+            if (arrow) arrow.style.transform = '';
+        }
+    });
+    </script>
 </body>
 </html>

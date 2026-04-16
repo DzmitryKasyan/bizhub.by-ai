@@ -155,21 +155,18 @@
                         Местоположение <span class="text-red-500">*</span>
                     </label>
                     <select id="location"
-                            name="location"
+                            name="location_id"
                             required
-                            class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white @error('location') border-red-400 @enderror">
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white @error('location_id') border-red-400 @enderror">
                         <option value="">Выберите город / регион</option>
-                        @if(isset($locations))
-                            @foreach($locations as $loc)
-                                <option value="{{ $loc }}" {{ old('location', $listing->location) === $loc ? 'selected' : '' }}>{{ $loc }}</option>
+                        @foreach($locations as $loc)
+                            <option value="{{ $loc->id }}" {{ old('location_id', $listing->location_id) == $loc->id ? 'selected' : '' }}>{{ $loc->name }}</option>
+                            @foreach($loc->children as $child)
+                                <option value="{{ $child->id }}" {{ old('location_id', $listing->location_id) == $child->id ? 'selected' : '' }}>&nbsp;&nbsp;&nbsp;{{ $child->name }}</option>
                             @endforeach
-                        @else
-                            @foreach(['Минск', 'Брест', 'Витебск', 'Гомель', 'Гродно', 'Могилёв', 'Брестская область', 'Витебская область', 'Гомельская область', 'Гродненская область', 'Минская область', 'Могилёвская область'] as $loc)
-                                <option value="{{ $loc }}" {{ old('location', $listing->location) === $loc ? 'selected' : '' }}>{{ $loc }}</option>
-                            @endforeach
-                        @endif
+                        @endforeach
                     </select>
-                    @error('location')
+                    @error('location_id')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>

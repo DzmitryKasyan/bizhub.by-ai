@@ -9,6 +9,7 @@ use App\Enums\ListingStatus;
 use App\Enums\ListingType;
 use App\Models\Category;
 use App\Models\Listing;
+use App\Models\ListingImage;
 use App\Models\Location;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -32,7 +33,10 @@ class ListingController extends Controller
         }
 
         if ($request->filled('category')) {
-            $query->where('category_id', $request->category);
+            $category = Category::where('slug', $request->category)->first();
+            if ($category) {
+                $query->where('category_id', $category->id);
+            }
         }
 
         if ($request->filled('location')) {
@@ -70,7 +74,11 @@ class ListingController extends Controller
 
     public function show(Listing $listing): View
     {
-        abort_unless($listing->isActive() || optional(auth()->user())->isAdmin(), 404);
+        $user = auth()->user();
+        $canView = $listing->isActive()
+            || ($user && $user->isAdmin())
+            || ($user && $listing->isOwnedBy($user));
+        abort_unless($canView, 404);
 
         $listing->incrementViews();
         $listing->load(['user.profile', 'category', 'subcategory', 'location', 'images', 'documents']);
@@ -88,11 +96,16 @@ class ListingController extends Controller
 
     public function myListings(Request $request): View
     {
-        $listings = auth()->user()
+        $query = auth()->user()
             ->listings()
             ->with(['category', 'location'])
-            ->latest()
-            ->paginate(20);
+            ->latest();
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $listings = $query->paginate(20);
 
         return view('dashboard.listings.index', compact('listings'));
     }
@@ -101,8 +114,8 @@ class ListingController extends Controller
     {
         $categories = Category::active()->root()->ordered()->with('children')->get();
         $locations = Location::regions()->with('children')->orderBy('name')->get();
-        $types = ListingType::cases();
-        $currencies = Currency::cases();
+        $types = array_column(array_map(fn($t) => ['value' => $t->value, 'label' => $t->label()], ListingType::cases()), 'label', 'value');
+        $currencies = array_column(array_map(fn($c) => ['value' => $c->value, 'label' => $c->label()], Currency::cases()), 'label', 'value');
 
         return view('dashboard.listings.create', compact('categories', 'locations', 'types', 'currencies'));
     }
@@ -110,19 +123,39 @@ class ListingController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'type' => 'required|in:' . implode(',', ListingType::values()),
-            'title' => 'required|string|max:255',
-            'description' => 'required|string|min:50',
-            'price' => 'nullable|numeric|min:0',
-            'currency' => 'required|in:' . implode(',', Currency::values()),
-            'category_id' => 'required|exists:categories,id',
-            'location_id' => 'nullable|exists:locations,id',
+            'type'              => 'required|in:' . implode(',', ListingType::values()),
+            'title'             => 'required|string|max:255',
+            'description'       => 'required|string|min:50',
+            'price'             => 'nullable|numeric|min:0',
+            'price_max'         => 'nullable|numeric|min:0',
+            'currency'          => 'required|in:' . implode(',', Currency::values()),
+            'price_negotiable'  => 'nullable|boolean',
+            'category_id'       => 'required|exists:categories,id',
+            'subcategory_id'    => 'nullable|exists:categories,id',
+            'location_id'       => 'nullable|exists:locations,id',
+            'monthly_revenue'   => 'nullable|numeric|min:0',
+            'monthly_profit'    => 'nullable|numeric|min:0',
+            'payback_months'    => 'nullable|integer|min:1|max:360',
+            'investment_amount' => 'nullable|numeric|min:0',
+            'year_founded'      => 'nullable|integer|min:1900|max:' . date('Y'),
+            'employees_count'   => 'nullable|integer|min:0',
+            'ownership_type'    => 'nullable|in:' . implode(',', \App\Enums\OwnershipType::values()),
+            'sale_reason'       => 'nullable|string|max:255',
+            'images.*'          => 'nullable|image|mimes:jpeg,png,webp|max:5120',
         ]);
+
+        $validated['status'] = $request->input('action') === 'publish'
+            ? ListingStatus::Pending
+            : ListingStatus::Draft;
 
         $listing = auth()->user()->listings()->create($validated);
 
+        $this->saveImages($request, $listing);
+
         return redirect()->route('my-listings.edit', $listing)
-            ->with('success', 'Объявление создано. Добавьте фотографии и отправьте на проверку.');
+            ->with('success', $validated['status'] === ListingStatus::Pending
+                ? 'Объявление отправлено на модерацию.'
+                : 'Черновик сохранён.');
     }
 
     public function edit(Listing $listing): View
@@ -132,8 +165,8 @@ class ListingController extends Controller
         $listing->load(['images', 'documents', 'category']);
         $categories = Category::active()->root()->ordered()->with('children')->get();
         $locations = Location::regions()->with('children')->orderBy('name')->get();
-        $types = ListingType::cases();
-        $currencies = Currency::cases();
+        $types = array_column(array_map(fn($t) => ['value' => $t->value, 'label' => $t->label()], ListingType::cases()), 'label', 'value');
+        $currencies = array_column(array_map(fn($c) => ['value' => $c->value, 'label' => $c->label()], Currency::cases()), 'label', 'value');
 
         return view('dashboard.listings.edit', compact('listing', 'categories', 'locations', 'types', 'currencies'));
     }
@@ -143,16 +176,30 @@ class ListingController extends Controller
         abort_unless($listing->isOwnedBy(auth()->user()) || auth()->user()->isModerator(), 403);
 
         $validated = $request->validate([
-            'type' => 'required|in:' . implode(',', ListingType::values()),
-            'title' => 'required|string|max:255',
-            'description' => 'required|string|min:50',
-            'price' => 'nullable|numeric|min:0',
-            'currency' => 'required|in:' . implode(',', Currency::values()),
-            'category_id' => 'required|exists:categories,id',
-            'location_id' => 'nullable|exists:locations,id',
+            'type'              => 'required|in:' . implode(',', ListingType::values()),
+            'title'             => 'required|string|max:255',
+            'description'       => 'required|string|min:50',
+            'price'             => 'nullable|numeric|min:0',
+            'price_max'         => 'nullable|numeric|min:0',
+            'currency'          => 'required|in:' . implode(',', Currency::values()),
+            'price_negotiable'  => 'nullable|boolean',
+            'category_id'       => 'required|exists:categories,id',
+            'subcategory_id'    => 'nullable|exists:categories,id',
+            'location_id'       => 'nullable|exists:locations,id',
+            'monthly_revenue'   => 'nullable|numeric|min:0',
+            'monthly_profit'    => 'nullable|numeric|min:0',
+            'payback_months'    => 'nullable|integer|min:1|max:360',
+            'investment_amount' => 'nullable|numeric|min:0',
+            'year_founded'      => 'nullable|integer|min:1900|max:' . date('Y'),
+            'employees_count'   => 'nullable|integer|min:0',
+            'ownership_type'    => 'nullable|in:' . implode(',', \App\Enums\OwnershipType::values()),
+            'sale_reason'       => 'nullable|string|max:255',
+            'images.*'          => 'nullable|image|mimes:jpeg,png,webp|max:5120',
         ]);
 
         $listing->update($validated);
+
+        $this->saveImages($request, $listing);
 
         return redirect()->route('my-listings.edit', $listing)
             ->with('success', 'Объявление обновлено.');
@@ -211,5 +258,23 @@ class ListingController extends Controller
     public function franchises(Request $request): View
     {
         return $this->index($request->merge(['type' => ListingType::Franchise->value]));
+    }
+
+    private function saveImages(Request $request, Listing $listing): void
+    {
+        if (!$request->hasFile('images')) {
+            return;
+        }
+
+        $existingCount = $listing->images()->count();
+
+        foreach ($request->file('images') as $i => $file) {
+            $path = $file->store('listings', 'public');
+            $listing->images()->create([
+                'path'       => $path,
+                'is_main'    => $existingCount === 0 && $i === 0,
+                'sort_order' => $existingCount + $i,
+            ]);
+        }
     }
 }

@@ -116,7 +116,7 @@
                         Пароль <span class="text-red-500">*</span>
                     </label>
                     <div class="relative" x-data="{ showPassword: false }">
-                        <input :type="showPassword ? 'text' : 'password'"
+                        <input type="password" :type="showPassword ? 'text' : 'password'"
                                id="password"
                                name="password"
                                required
@@ -145,7 +145,7 @@
                         Подтверждение пароля <span class="text-red-500">*</span>
                     </label>
                     <div class="relative" x-data="{ showPassword: false }">
-                        <input :type="showPassword ? 'text' : 'password'"
+                        <input type="password" :type="showPassword ? 'text' : 'password'"
                                id="password_confirmation"
                                name="password_confirmation"
                                required
@@ -169,7 +169,7 @@
                 <div>
                     <label class="flex items-start gap-3 cursor-pointer">
                         <input type="checkbox"
-                               name="terms"
+                               name="agree_terms"
                                required
                                class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-300 mt-0.5">
                         <span class="text-sm text-gray-600">

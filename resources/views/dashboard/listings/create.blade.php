@@ -153,21 +153,18 @@
                         Местоположение <span class="text-red-500">*</span>
                     </label>
                     <select id="location"
-                            name="location"
+                            name="location_id"
                             required
-                            class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white @error('location') border-red-400 @enderror">
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white @error('location_id') border-red-400 @enderror">
                         <option value="">Выберите город / регион</option>
-                        @if(isset($locations))
-                            @foreach($locations as $loc)
-                                <option value="{{ $loc }}" {{ old('location') === $loc ? 'selected' : '' }}>{{ $loc }}</option>
+                        @foreach($locations as $loc)
+                            <option value="{{ $loc->id }}" {{ old('location_id') == $loc->id ? 'selected' : '' }}>{{ $loc->name }}</option>
+                            @foreach($loc->children as $child)
+                                <option value="{{ $child->id }}" {{ old('location_id') == $child->id ? 'selected' : '' }}>&nbsp;&nbsp;&nbsp;{{ $child->name }}</option>
                             @endforeach
-                        @else
-                            @foreach(['Минск', 'Брест', 'Витебск', 'Гомель', 'Гродно', 'Могилёв', 'Брестская область', 'Витебская область', 'Гомельская область', 'Гродненская область', 'Минская область', 'Могилёвская область'] as $loc)
-                                <option value="{{ $loc }}" {{ old('location') === $loc ? 'selected' : '' }}>{{ $loc }}</option>
-                            @endforeach
-                        @endif
+                        @endforeach
                     </select>
-                    @error('location')
+                    @error('location_id')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>
@@ -245,16 +242,9 @@
                                 name="currency"
                                 required
                                 class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white">
-                            @if(isset($currencies))
-                                @foreach($currencies as $cur)
-                                    <option value="{{ $cur }}" {{ old('currency', 'BYN') === $cur ? 'selected' : '' }}>{{ $cur }}</option>
-                                @endforeach
-                            @else
-                                <option value="BYN" {{ old('currency', 'BYN') === 'BYN' ? 'selected' : '' }}>BYN — Белорусский рубль</option>
-                                <option value="USD" {{ old('currency') === 'USD' ? 'selected' : '' }}>USD — Доллар США</option>
-                                <option value="EUR" {{ old('currency') === 'EUR' ? 'selected' : '' }}>EUR — Евро</option>
-                                <option value="RUB" {{ old('currency') === 'RUB' ? 'selected' : '' }}>RUB — Российский рубль</option>
-                            @endif
+                            @foreach($currencies as $curValue => $curLabel)
+                                <option value="{{ $curValue }}" {{ old('currency', 'BYN') === $curValue ? 'selected' : '' }}>{{ $curValue }} — {{ $curLabel }}</option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
@@ -411,12 +401,9 @@
                                 name="ownership_type"
                                 class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white">
                             <option value="">Не указано</option>
-                            <option value="ИП"     {{ old('ownership_type') === 'ИП'     ? 'selected' : '' }}>ИП — Индивидуальный предприниматель</option>
-                            <option value="ООО"    {{ old('ownership_type') === 'ООО'    ? 'selected' : '' }}>ООО — Общество с ограниченной ответственностью</option>
-                            <option value="ОДО"    {{ old('ownership_type') === 'ОДО'    ? 'selected' : '' }}>ОДО</option>
-                            <option value="АО"     {{ old('ownership_type') === 'АО'     ? 'selected' : '' }}>АО — Акционерное общество</option>
-                            <option value="ЗАО"    {{ old('ownership_type') === 'ЗАО'    ? 'selected' : '' }}>ЗАО</option>
-                            <option value="Другое" {{ old('ownership_type') === 'Другое' ? 'selected' : '' }}>Другое</option>
+                            @foreach(\App\Enums\OwnershipType::cases() as $ot)
+                                <option value="{{ $ot->value }}" {{ old('ownership_type') === $ot->value ? 'selected' : '' }}>{{ $ot->label() }}</option>
+                            @endforeach
                         </select>
                     </div>
 

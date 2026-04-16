@@ -35,18 +35,11 @@ $statusLabels = [
     'archived'  => ['label' => 'В архиве',       'class' => 'bg-gray-100 text-gray-500'],
 ];
 
-$statusInfo  = $statusLabels[$listing->status] ?? ['label' => $listing->status, 'class' => 'bg-gray-100 text-gray-600'];
-$badgeClass  = $typeBadgeColors[$listing->type] ?? 'bg-gray-100 text-gray-700';
-$typeLabel   = $typeLabels[$listing->type] ?? $listing->type;
+$statusInfo  = $statusLabels[$listing->status->value] ?? ['label' => $listing->status->label(), 'class' => 'bg-gray-100 text-gray-600'];
+$badgeClass  = $typeBadgeColors[$listing->type->value] ?? 'bg-gray-100 text-gray-700';
+$typeLabel   = $listing->type->label();
 
-$images = [];
-if ($listing->main_image) {
-    $images[] = $listing->main_image;
-}
-if ($listing->images && is_array($listing->images)) {
-    $images = array_merge($images, $listing->images);
-}
-$images = array_unique($images);
+$images = array_unique(array_filter($listing->images_array));
 @endphp
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -70,34 +63,25 @@ $images = array_unique($images);
         <div class="lg:col-span-2 space-y-6">
 
             <!-- Image Gallery -->
-            <div x-data="{ activeImage: '{{ count($images) ? asset('storage/' . $images[0]) : '' }}' }"
-                 class="bg-white rounded-xl overflow-hidden border border-gray-100">
+            @if(count($images))
+            @php $galleryImages = array_values($images); @endphp
+            <div class="bg-white rounded-xl overflow-hidden border border-gray-100" id="gallery">
                 <!-- Main Image -->
-                <div class="aspect-video bg-gray-100 relative overflow-hidden">
-                    @if(count($images))
-                        <img :src="activeImage"
-                             src="{{ asset('storage/' . $images[0]) }}"
-                             alt="{{ $listing->title }}"
-                             class="w-full h-full object-cover">
-                    @else
-                        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
-                            <div class="text-center text-gray-400">
-                                <svg class="w-16 h-16 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                </svg>
-                                <p class="text-sm">Нет фото</p>
-                            </div>
-                        </div>
-                    @endif
+                <div class="aspect-video bg-gray-100 relative overflow-hidden cursor-zoom-in"
+                     onclick="openLightbox(this.querySelector('img').src)">
+                    <img id="gallery-main"
+                         src="{{ asset('storage/' . $galleryImages[0]) }}"
+                         alt="{{ $listing->title }}"
+                         class="w-full h-full object-cover transition-opacity duration-200">
                 </div>
 
                 <!-- Thumbnails -->
-                @if(count($images) > 1)
+                @if(count($galleryImages) > 1)
                     <div class="flex gap-2 p-3 overflow-x-auto">
-                        @foreach($images as $image)
-                            <button @click="activeImage = '{{ asset('storage/' . $image) }}'"
-                                    class="flex-shrink-0 w-20 h-16 rounded-lg overflow-hidden border-2 transition-colors hover:border-blue-400"
-                                    :class="activeImage === '{{ asset('storage/' . $image) }}' ? 'border-blue-500' : 'border-transparent'">
+                        @foreach($galleryImages as $i => $image)
+                            <button onclick="setGalleryImage('{{ asset('storage/' . $image) }}', this)"
+                                    data-active="{{ $i === 0 ? 'true' : 'false' }}"
+                                    class="flex-shrink-0 w-20 h-16 rounded-lg overflow-hidden border-2 transition-colors hover:border-blue-400 {{ $i === 0 ? 'border-blue-500' : 'border-transparent' }}">
                                 <img src="{{ asset('storage/' . $image) }}"
                                      alt=""
                                      class="w-full h-full object-cover">
@@ -106,6 +90,54 @@ $images = array_unique($images);
                     </div>
                 @endif
             </div>
+
+            <!-- Lightbox -->
+            <div id="lightbox"
+                 onclick="closeLightbox()"
+                 style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.92); z-index:9999; cursor:zoom-out; align-items:center; justify-content:center;">
+                <img id="lightbox-img" src="" alt=""
+                     style="max-width:92vw; max-height:92vh; object-fit:contain; border-radius:8px; box-shadow:0 0 60px rgba(0,0,0,0.8);"
+                     onclick="event.stopPropagation()">
+                <button onclick="closeLightbox()"
+                        style="position:absolute; top:20px; right:24px; color:#fff; font-size:32px; background:none; border:none; cursor:pointer; line-height:1;">&times;</button>
+            </div>
+
+            <script>
+                function setGalleryImage(src, btn) {
+                    document.getElementById('gallery-main').src = src;
+                    document.querySelectorAll('#gallery button').forEach(function(b) {
+                        b.classList.remove('border-blue-500');
+                        b.classList.add('border-transparent');
+                    });
+                    btn.classList.remove('border-transparent');
+                    btn.classList.add('border-blue-500');
+                }
+                function openLightbox(src) {
+                    var lb = document.getElementById('lightbox');
+                    document.getElementById('lightbox-img').src = src;
+                    lb.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                }
+                function closeLightbox() {
+                    document.getElementById('lightbox').style.display = 'none';
+                    document.body.style.overflow = '';
+                }
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') closeLightbox();
+                });
+            </script>
+            @else
+            <div class="bg-white rounded-xl overflow-hidden border border-gray-100">
+                <div class="aspect-video bg-gray-100 flex items-center justify-center">
+                    <div class="text-center text-gray-400">
+                        <svg class="w-16 h-16 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        <p class="text-sm">Нет фото</p>
+                    </div>
+                </div>
+            </div>
+            @endif
 
             <!-- Title & Badges -->
             <div class="bg-white rounded-xl border border-gray-100 p-6">
@@ -166,7 +198,7 @@ $images = array_unique($images);
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                             </svg>
-                            {{ $listing->location }}
+                            {{ $listing->location->name }}
                         </div>
                     @endif
                     @if($listing->category)
@@ -372,7 +404,7 @@ $images = array_unique($images);
     <section class="mt-12">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl font-bold text-gray-900">Похожие объявления</h2>
-            <a href="{{ route('listings.index', ['type' => $listing->type]) }}"
+            <a href="{{ route('listings.index', ['type' => $listing->type->value]) }}"
                class="text-blue-600 hover:text-blue-700 text-sm font-medium">
                 Смотреть все →
             </a>

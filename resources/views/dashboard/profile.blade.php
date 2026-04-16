@@ -73,7 +73,7 @@
                         'admin'        => 'Администратор',
                     ];
                     @endphp
-                    {{ $roles[auth()->user()->role] ?? auth()->user()->role }}
+                    {{ auth()->user()->role->label() }}
                 </p>
             @endif
             <p class="text-xs text-gray-400 mt-2">
