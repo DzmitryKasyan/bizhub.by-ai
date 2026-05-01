@@ -1,4 +1,4 @@
-@if(config('analytics.yandex_metrika_id'))
+@if(config('services.yandex_metrika_id'))
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript">
         (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
@@ -7,7 +7,7 @@
             k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
         (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
 
-        ym({{ config('analytics.yandex_metrika_id') }}, "init", {
+        ym({{ config('services.yandex_metrika_id') }}, "init", {
             clickmap:true,
             trackLinks:true,
             accurateTrackBounce:true,
@@ -16,7 +16,7 @@
     </script>
     <noscript>
         <div>
-            <img src="https://mc.yandex.ru/watch/{{ config('analytics.yandex_metrika_id') }}"
+            <img src="https://mc.yandex.ru/watch/{{ config('services.yandex_metrika_id') }}"
                  style="position:absolute; left:-9999px;" alt="" />
         </div>
     </noscript>
