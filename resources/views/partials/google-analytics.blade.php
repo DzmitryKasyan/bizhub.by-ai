@@ -1,4 +1,4 @@
-@if(config('analytics.google_analytics_id'))
+@if(config('services.google_analytics_id'))
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id={{ config('services.google_analytics_id') }}"></script>
     <script>

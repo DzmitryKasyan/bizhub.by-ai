@@ -45,9 +45,9 @@
 
     @stack('styles')
 
-    @production
+    @if(app()->environment('production'))
         @include('partials.google-analytics')
-    @endproduction
+    @endif
 </head>
 <body class="bg-gray-50 text-gray-900 antialiased font-sans" x-data="{ mobileMenuOpen: false }">
 
