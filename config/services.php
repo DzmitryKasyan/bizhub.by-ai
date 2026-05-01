@@ -35,4 +35,7 @@ return [
         ],
     ],
 
+    'google_analytics_id' => env('GOOGLE_ANALYTICS_ID'),
+    'yandex_metrika_id'   => env('YANDEX_METRIKA_ID'),
+
 ];

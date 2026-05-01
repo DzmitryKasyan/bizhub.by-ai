@@ -44,8 +44,16 @@
     @livewireStyles
 
     @stack('styles')
+
+    @production
+        @include('partials.google-analytics')
+    @endproduction
 </head>
 <body class="bg-gray-50 text-gray-900 antialiased font-sans" x-data="{ mobileMenuOpen: false }">
+
+    @if(app()->environment('production'))
+        @include('partials.yandex-metrika')
+    @endif
 
     <!-- Navigation -->
     <header class="bg-white shadow-sm sticky top-0 z-50">
