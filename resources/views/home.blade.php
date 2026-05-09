@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Главная')
+@section('title', 'Бизнес хаб')
 @section('meta_description', 'BizHub.by — найдите готовый бизнес, инвестиции или франшизу в Беларуси. Тысячи актуальных предложений.')
 
 @section('content')
