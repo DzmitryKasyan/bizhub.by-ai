@@ -53,6 +53,8 @@ class RegisterController extends Controller
 
         Auth::login($user);
 
+        $user->assignRole($validated['role']);
+
         return redirect()->route('dashboard')
             ->with('success', 'Добро пожаловать в BizHub.by! Пожалуйста, подтвердите ваш email.');
     }

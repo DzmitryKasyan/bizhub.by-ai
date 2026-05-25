@@ -328,13 +328,36 @@ $images = array_unique(array_filter($listing->images_array));
 
                 <!-- Contact Actions -->
                 @if(auth()->check() && auth()->id() !== ($listing->user_id ?? null))
-                    <a href="#"
-                       class="w-full flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors mb-3">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-3 3v-3z"/>
-                        </svg>
-                        Написать сообщение
-                    </a>
+                    <div x-data="{ open: false }" class="mb-3">
+                        <button type="button"
+                                @click="open = !open"
+                                class="w-full flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-3 3v-3z"/>
+                            </svg>
+                            Написать сообщение
+                        </button>
+
+                        <form action="{{ route('messages.start', $listing) }}"
+                              method="POST"
+                              x-show="open"
+                              x-cloak
+                              @click.outside="open = false"
+                              class="mt-3">
+                            @csrf
+                            <textarea name="body"
+                                      rows="3"
+                                      required
+                                      placeholder="Напишите ваше сообщение..."
+                                      class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 resize-none"
+                            ></textarea>
+                            <button type="submit"
+                                    class="w-full mt-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors">
+                                Отправить
+                            </button>
+                        </form>
+                    </div>
+
                     <button
                        class="w-full flex items-center justify-center gap-2 border border-slate-200 hover:border-slate-300 text-slate-700 font-medium px-6 py-3 rounded-xl transition-colors">
                         <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

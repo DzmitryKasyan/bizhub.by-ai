@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
@@ -155,9 +156,9 @@ class Listing extends Model implements HasMedia
         return $this->hasMany(ListingImage::class)->orderBy('sort_order');
     }
 
-    public function mainImage(): HasMany
+    public function mainImage(): HasOne
     {
-        return $this->hasMany(ListingImage::class)->where('is_main', true)->limit(1);
+        return $this->hasOne(ListingImage::class)->where('is_main', true);
     }
 
     public function documents(): HasMany

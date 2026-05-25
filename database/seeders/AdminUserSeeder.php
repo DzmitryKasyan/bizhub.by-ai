@@ -8,11 +8,17 @@ use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
+        // Create Spatie roles
+        foreach (UserRole::cases() as $role) {
+            Role::firstOrCreate(['name' => $role->value, 'guard_name' => 'web']);
+        }
+
         // Super Admin
         $admin = User::updateOrCreate(
             ['email' => 'admin@bizhub.by'],
