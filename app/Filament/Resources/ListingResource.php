@@ -54,10 +54,11 @@ class ListingResource extends Resource
                     ->label('ID')
                     ->sortable(),
 
-                ImageColumn::make('mainImage.path')
+                ImageColumn::make('mainImage')
                     ->label('Фото')
                     ->square()
                     ->size(40)
+                    ->disk('public')
                     ->defaultImageUrl(fn () => null),
 
                 TextColumn::make('title')
@@ -262,12 +263,12 @@ class ListingResource extends Resource
 
                 Section::make('Изображения')
                     ->schema([
-                        \Filament\Infolists\Components\ImageEntry::make('mainImage.path')
+                        \Filament\Infolists\Components\ImageEntry::make('mainImage')
                             ->label('Главное изображение')
+                            ->disk('public')
                             ->size(200)
                             ->defaultImageUrl(null),
-                    ])
-                    ->visible(fn (Listing $record): bool => $record->mainImage !== null),
+                    ]),
 
                 Section::make('Описание')
                     ->schema([
