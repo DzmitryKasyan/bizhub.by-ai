@@ -161,7 +161,7 @@
                     <!-- Privacy Notice -->
                     <p class="text-xs text-slate-400">
                         Нажимая «Отправить», вы соглашаетесь с
-                        <a href="{{ route('page.show', 'privacy') }}" class="text-primary-600 hover:underline">
+                        <a href="{{ route('article.show', 'privacy') }}" class="text-primary-600 hover:underline">
                             политикой конфиденциальности
                         </a>.
                     </p>
