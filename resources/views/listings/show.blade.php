@@ -367,6 +367,47 @@ $images = array_unique(array_filter($listing->images_array));
                         </svg>
                         В избранное
                     </button>
+
+                    <!-- Report button -->
+                    <div x-data="{ reportOpen: false }" class="mt-2">
+                        <button type="button"
+                                @click="reportOpen = !reportOpen"
+                                class="w-full flex items-center justify-center gap-1.5 text-xs text-slate-400 hover:text-red-500 font-medium py-2 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"/>
+                            </svg>
+                            Пожаловаться
+                        </button>
+                        <form action="{{ route('listings.report', $listing) }}"
+                              method="POST"
+                              x-show="reportOpen"
+                              x-transition
+                              class="mt-2 p-4 bg-red-50 rounded-xl border border-red-100 space-y-3"
+                              @click.outside="reportOpen = false">
+                            @csrf
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Причина</label>
+                                <select name="reason" required
+                                        class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-300 bg-white">
+                                    <option value="">Выберите причину</option>
+                                    <option value="spam">Спам</option>
+                                    <option value="fraud">Мошенничество</option>
+                                    <option value="incorrect_info">Неверная информация</option>
+                                    <option value="other">Другое</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Описание (необязательно)</label>
+                                <textarea name="description" rows="2" maxlength="1000"
+                                          placeholder="Опишите проблему..."
+                                          class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-300 resize-none bg-white"></textarea>
+                            </div>
+                            <button type="submit"
+                                    class="w-full bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+                                Отправить жалобу
+                            </button>
+                        </form>
+                    </div>
                 @elseif(!auth()->check())
                     <a href="{{ route('login') }}"
                        class="w-full flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors">
