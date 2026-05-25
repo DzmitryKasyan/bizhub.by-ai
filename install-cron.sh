@@ -6,7 +6,7 @@
 set -euo pipefail
 
 PROJECT_DIR="${1:-$(pwd)}"
-CRON_LINE="* * * * * cd ${PROJECT_DIR} && docker compose exec -T app php artisan schedule:run >> storage/logs/cron.log 2>&1"
+CRON_LINE="* * * * * cd ${PROJECT_DIR} && php artisan schedule:run >> storage/logs/cron.log 2>&1"
 MARKER="# bizhub-scheduler"
 
 echo "==> Project dir: ${PROJECT_DIR}"
