@@ -49,16 +49,16 @@
         @if($messages->count())
 
             <!-- Older messages pagination -->
-            @if($messages->hasMorePages())
+            @if($messages->currentPage() > 1)
                 <div class="text-center">
-                    <a href="{{ route('messages.show', $conversation) }}?page={{ $messages->currentPage() + 1 }}"
+                    <a href="{{ route('messages.show', $conversation) }}?page={{ $messages->currentPage() - 1 }}"
                        class="text-sm text-primary-600 hover:text-primary-700 font-medium">
                         Загрузить более ранние сообщения
                     </a>
                 </div>
             @endif
 
-            @foreach($messages->reverse() as $message)
+            @foreach($messages as $message)
                 @php
                     $isOwn = $message->sender_id === auth()->id();
                 @endphp

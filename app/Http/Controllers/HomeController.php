@@ -8,12 +8,15 @@ use App\Enums\ListingStatus;
 use App\Enums\ListingType;
 use App\Models\Category;
 use App\Models\Listing;
+use App\Services\ExchangeRateService;
 use Illuminate\View\View;
 
 class HomeController extends Controller
 {
-    public function index(): View
+    public function index(ExchangeRateService $rates): View
     {
+        $exchangeRates = $rates->getRates();
+
         $featuredListings = Listing::query()
             ->active()
             ->with(['category', 'location', 'images'])
@@ -45,6 +48,6 @@ class HomeController extends Controller
             'franchises' => Listing::active()->ofType(ListingType::Franchise)->count(),
         ];
 
-        return view('home', compact('featuredListings', 'recentListings', 'categories', 'stats'));
+        return view('home', compact('featuredListings', 'recentListings', 'categories', 'stats', 'exchangeRates'));
     }
 }

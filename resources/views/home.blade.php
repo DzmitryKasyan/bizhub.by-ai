@@ -110,6 +110,24 @@ $typeBadgeColors = [
     </div>
 </section>
 
+<!-- Exchange Rates Bar -->
+@if(!empty($exchangeRates))
+<section class="relative z-10">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-100 shadow-sm px-6 py-3 flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Курсы валют</span>
+            @foreach($exchangeRates as $code => $rate)
+                <span class="inline-flex items-center gap-1.5 text-sm">
+                    <span class="font-bold text-slate-700">{{ $code }}</span>
+                    <span class="text-slate-500">{{ number_format($rate, $code === 'BTC' ? 0 : ($code === 'ETH' ? 0 : 4), '.', ' ') }}</span>
+                    <span class="text-xs text-slate-400">Br</span>
+                </span>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
+
 <!-- Stats Section -->
 <section class="relative -mt-2 z-10">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
