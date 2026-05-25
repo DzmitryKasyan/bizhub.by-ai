@@ -7,6 +7,8 @@
     <meta name="keywords" content="@yield('meta_keywords', 'купить бизнес, продать бизнес, инвестиции, франшиза, Беларусь')">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+
     <title>@yield('title', 'BizHub.by') — Платформа для покупки и продажи бизнеса в Беларуси</title>
 
     <!-- Tailwind CSS CDN -->
