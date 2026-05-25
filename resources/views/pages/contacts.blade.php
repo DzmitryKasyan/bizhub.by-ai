@@ -9,8 +9,8 @@
 
     <!-- Page Header -->
     <div class="text-center mb-12">
-        <h1 class="text-3xl font-bold text-gray-900 mb-3">Контакты</h1>
-        <p class="text-gray-500 text-lg max-w-xl mx-auto">
+        <h1 class="text-3xl font-bold text-slate-900 mb-3">Контакты</h1>
+        <p class="text-slate-500 text-lg max-w-xl mx-auto">
             Есть вопросы или предложения? Мы всегда готовы помочь
         </p>
     </div>
@@ -21,17 +21,17 @@
         <div class="lg:col-span-1 space-y-5">
 
             <!-- Address -->
-            <div class="bg-white rounded-xl border border-gray-100 p-6">
+            <div class="bg-white rounded-xl border border-slate-100 p-6">
                 <div class="flex items-start gap-4">
-                    <div class="w-11 h-11 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-11 h-11 bg-primary-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                         </svg>
                     </div>
                     <div>
-                        <h3 class="font-semibold text-gray-900 mb-1">Адрес</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed">
+                        <h3 class="font-semibold text-slate-900 mb-1">Адрес</h3>
+                        <p class="text-sm text-slate-600 leading-relaxed">
                             220000, Беларусь<br>
                             г. Минск, пр-т Независимости
                         </p>
@@ -40,7 +40,7 @@
             </div>
 
             <!-- Email -->
-            <div class="bg-white rounded-xl border border-gray-100 p-6">
+            <div class="bg-white rounded-xl border border-slate-100 p-6">
                 <div class="flex items-start gap-4">
                     <div class="w-11 h-11 bg-green-50 rounded-xl flex items-center justify-center flex-shrink-0">
                         <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -48,18 +48,18 @@
                         </svg>
                     </div>
                     <div>
-                        <h3 class="font-semibold text-gray-900 mb-1">Email</h3>
+                        <h3 class="font-semibold text-slate-900 mb-1">Email</h3>
                         <a href="mailto:info@bizhub.by"
-                           class="text-sm text-blue-600 hover:text-blue-700 transition-colors font-medium">
+                           class="text-sm text-primary-600 hover:text-primary-700 transition-colors font-medium">
                             info@bizhub.by
                         </a>
-                        <p class="text-xs text-gray-400 mt-1">Ответим в течение 24 часов</p>
+                        <p class="text-xs text-slate-400 mt-1">Ответим в течение 24 часов</p>
                     </div>
                 </div>
             </div>
 
             <!-- Phone -->
-            <div class="bg-white rounded-xl border border-gray-100 p-6">
+            <div class="bg-white rounded-xl border border-slate-100 p-6">
                 <div class="flex items-start gap-4">
                     <div class="w-11 h-11 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
                         <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,18 +67,18 @@
                         </svg>
                     </div>
                     <div>
-                        <h3 class="font-semibold text-gray-900 mb-1">Телефон</h3>
+                        <h3 class="font-semibold text-slate-900 mb-1">Телефон</h3>
                         <a href="tel:+375291234567"
-                           class="text-sm text-blue-600 hover:text-blue-700 transition-colors font-medium">
+                           class="text-sm text-primary-600 hover:text-primary-700 transition-colors font-medium">
                             +375 (29) 123-45-67
                         </a>
-                        <p class="text-xs text-gray-400 mt-1">Пн–Пт, 9:00 – 18:00</p>
+                        <p class="text-xs text-slate-400 mt-1">Пн–Пт, 9:00 – 18:00</p>
                     </div>
                 </div>
             </div>
 
             <!-- Telegram -->
-            <div class="bg-white rounded-xl border border-gray-100 p-6">
+            <div class="bg-white rounded-xl border border-slate-100 p-6">
                 <div class="flex items-start gap-4">
                     <div class="w-11 h-11 bg-sky-50 rounded-xl flex items-center justify-center flex-shrink-0">
                         <svg class="w-5 h-5 text-sky-500" fill="currentColor" viewBox="0 0 24 24">
@@ -86,13 +86,13 @@
                         </svg>
                     </div>
                     <div>
-                        <h3 class="font-semibold text-gray-900 mb-1">Telegram</h3>
+                        <h3 class="font-semibold text-slate-900 mb-1">Telegram</h3>
                         <a href="https://t.me/bizhubby"
                            target="_blank" rel="noopener noreferrer"
-                           class="text-sm text-blue-600 hover:text-blue-700 transition-colors font-medium">
+                           class="text-sm text-primary-600 hover:text-primary-700 transition-colors font-medium">
                             @bizhubby
                         </a>
-                        <p class="text-xs text-gray-400 mt-1">Быстрые ответы на вопросы</p>
+                        <p class="text-xs text-slate-400 mt-1">Быстрые ответы на вопросы</p>
                     </div>
                 </div>
             </div>
@@ -101,9 +101,9 @@
 
         <!-- Contact Form -->
         <div class="lg:col-span-2">
-            <div class="bg-white rounded-xl border border-gray-100 p-6 sm:p-8">
-                <h2 class="text-xl font-bold text-gray-900 mb-2">Написать нам</h2>
-                <p class="text-gray-500 text-sm mb-6">Заполните форму, и мы свяжемся с вами в ближайшее время</p>
+            <div class="bg-white rounded-xl border border-slate-100 p-6 sm:p-8">
+                <h2 class="text-xl font-bold text-slate-900 mb-2">Написать нам</h2>
+                <p class="text-slate-500 text-sm mb-6">Заполните форму, и мы свяжемся с вами в ближайшее время</p>
 
                 <form action="#" method="POST" class="space-y-5">
                     @csrf
@@ -111,64 +111,64 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <!-- Name -->
                         <div>
-                            <label for="contact_name" class="block text-sm font-medium text-gray-700 mb-1.5">
+                            <label for="contact_name" class="block text-sm font-medium text-slate-700 mb-1.5">
                                 Ваше имя <span class="text-red-500">*</span>
                             </label>
                             <input type="text"
                                    id="contact_name"
                                    name="name"
                                    placeholder="Иван Иванов"
-                                   class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 transition-shadow">
+                                   class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 transition-shadow">
                         </div>
 
                         <!-- Email -->
                         <div>
-                            <label for="contact_email" class="block text-sm font-medium text-gray-700 mb-1.5">
+                            <label for="contact_email" class="block text-sm font-medium text-slate-700 mb-1.5">
                                 Email <span class="text-red-500">*</span>
                             </label>
                             <input type="email"
                                    id="contact_email"
                                    name="email"
                                    placeholder="ivan@example.com"
-                                   class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 transition-shadow">
+                                   class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 transition-shadow">
                         </div>
                     </div>
 
                     <!-- Subject -->
                     <div>
-                        <label for="contact_subject" class="block text-sm font-medium text-gray-700 mb-1.5">
+                        <label for="contact_subject" class="block text-sm font-medium text-slate-700 mb-1.5">
                             Тема
                         </label>
                         <input type="text"
                                id="contact_subject"
                                name="subject"
                                placeholder="Кратко опишите вопрос"
-                               class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 transition-shadow">
+                               class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 transition-shadow">
                     </div>
 
                     <!-- Message -->
                     <div>
-                        <label for="contact_message" class="block text-sm font-medium text-gray-700 mb-1.5">
+                        <label for="contact_message" class="block text-sm font-medium text-slate-700 mb-1.5">
                             Сообщение <span class="text-red-500">*</span>
                         </label>
                         <textarea id="contact_message"
                                   name="message"
                                   rows="6"
                                   placeholder="Подробно опишите ваш вопрос или предложение..."
-                                  class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 resize-y transition-shadow"></textarea>
+                                  class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 resize-y transition-shadow"></textarea>
                     </div>
 
                     <!-- Privacy Notice -->
-                    <p class="text-xs text-gray-400">
+                    <p class="text-xs text-slate-400">
                         Нажимая «Отправить», вы соглашаетесь с
-                        <a href="{{ route('page.show', 'privacy') }}" class="text-blue-600 hover:underline">
+                        <a href="{{ route('page.show', 'privacy') }}" class="text-primary-600 hover:underline">
                             политикой конфиденциальности
                         </a>.
                     </p>
 
                     <div class="flex items-center justify-end">
                         <button type="submit"
-                                class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-7 py-3 rounded-xl transition-colors">
+                                class="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold px-7 py-3 rounded-xl transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
                             </svg>
@@ -179,14 +179,14 @@
             </div>
 
             <!-- Map placeholder -->
-            <div class="mt-5 bg-white rounded-xl border border-gray-100 overflow-hidden">
+            <div class="mt-5 bg-white rounded-xl border border-slate-100 overflow-hidden">
                 <div class="h-56 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
                     <div class="text-center">
-                        <svg class="w-10 h-10 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-10 h-10 text-slate-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                         </svg>
-                        <p class="text-sm text-gray-400">Минск, Беларусь</p>
+                        <p class="text-sm text-slate-400">Минск, Беларусь</p>
                     </div>
                 </div>
             </div>
