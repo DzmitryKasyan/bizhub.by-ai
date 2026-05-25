@@ -163,7 +163,7 @@ $images = array_unique(array_filter($listing->images_array));
                             <p class="text-xs text-slate-500 mb-1">Выручка/мес</p>
                             <p class="text-base font-bold text-slate-900">
                                 {{ number_format($listing->monthly_revenue, 0, '.', ' ') }}
-                                <span class="text-xs font-normal text-slate-400">{{ $listing->currency ?? 'BYN' }}</span>
+                                <span class="text-xs font-normal text-slate-400">{{ $listing->currency ?? 'Br' }}</span>
                             </p>
                         </div>
                     @endif
@@ -172,7 +172,7 @@ $images = array_unique(array_filter($listing->images_array));
                             <p class="text-xs text-slate-500 mb-1">Прибыль/мес</p>
                             <p class="text-base font-bold text-slate-900">
                                 {{ number_format($listing->monthly_profit, 0, '.', ' ') }}
-                                <span class="text-xs font-normal text-slate-400">{{ $listing->currency ?? 'BYN' }}</span>
+                                <span class="text-xs font-normal text-slate-400">{{ $listing->currency ?? 'Br' }}</span>
                             </p>
                         </div>
                     @endif
@@ -247,7 +247,7 @@ $images = array_unique(array_filter($listing->images_array));
                         <div class="flex flex-col gap-1">
                             <dt class="text-xs text-slate-500 uppercase tracking-wide">Сумма инвестиций</dt>
                             <dd class="font-medium text-slate-900">
-                                {{ number_format($listing->investment_amount, 0, '.', ' ') }} {{ $listing->currency ?? 'BYN' }}
+                                {{ number_format($listing->investment_amount, 0, '.', ' ') }} {{ $listing->currency ?? 'Br' }}
                             </dd>
                         </div>
                     @endif
@@ -311,11 +311,11 @@ $images = array_unique(array_filter($listing->images_array));
                         <p class="text-sm text-slate-500 mb-1">Стоимость</p>
                         <p class="text-3xl font-bold text-slate-900">
                             {{ number_format($listing->price, 0, '.', ' ') }}
-                            <span class="text-xl font-semibold text-slate-500">{{ $listing->currency ?? 'BYN' }}</span>
+                            <span class="text-xl font-semibold text-slate-500">{{ $listing->currency ?? 'Br' }}</span>
                         </p>
                         @if($listing->price_max)
                             <p class="text-sm text-slate-500 mt-1">
-                                до {{ number_format($listing->price_max, 0, '.', ' ') }} {{ $listing->currency ?? 'BYN' }}
+                                до {{ number_format($listing->price_max, 0, '.', ' ') }} {{ $listing->currency ?? 'Br' }}
                             </p>
                         @endif
                         @if($listing->price_negotiable)

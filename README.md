@@ -1,58 +1,99 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# BizHub.by
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Платформа для покупки и продажи бизнеса в Беларуси.
 
-## About Laravel
+**Стек:** Laravel 12, PHP 8.4, MySQL 8, Redis, Meilisearch, Tailwind CSS, Alpine.js
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Быстрый старт (локально)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
+### 1. Клонировать
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone <repo-url> bizhub
+cd bizhub
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2. Переменные окружения
+```bash
+cp .env.example .env
+# Отредактировать .env: DB_HOST, DB_DATABASE, DB_USERNAME, DB_PASSWORD
+```
 
-## Contributing
+### 3. Запустить Docker-сервисы
+```bash
+docker compose up -d
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 4. Установить зависимости
+```bash
+docker compose exec app composer install
+```
 
-## Code of Conduct
+### 5. Сгенерировать ключ + миграции + сиды
+```bash
+docker compose exec app php artisan key:generate
+docker compose exec app php artisan migrate --seed
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 6. Создать storage link
+```bash
+docker compose exec app php artisan storage:link
+```
 
-## Security Vulnerabilities
+### 7. Открыть в браузере
+```
+http://bizhub/
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Команды
 
-## License
+| Команда | Назначение |
+|---|---|
+| `php artisan onliner:parse` | Спарсить объявления с onliner.by в JSONL |
+| `php artisan onliner:import` | Импорт из JSONL в БД |
+| `php artisan optimize:clear` | Сброс всех кэшей |
+| `php artisan migrate:fresh --seed` | Пересоздать БД с тестовыми данными |
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Структура
+
+```
+bizhub/
+├── app/
+│   ├── Console/Commands/   # onliner:parse, onliner:import
+│   ├── Enums/              # Currency, ListingType, ListingStatus…
+│   ├── Filament/           # Админ-панель (Filament)
+│   ├── Http/Controllers/
+│   ├── Models/
+│   └── Providers/
+├── database/
+│   ├── migrations/
+│   └── seeders/
+├── resources/views/
+│   ├── layouts/            # app.blade.php (основной), dashboard.blade.php
+│   ├── listings/           # Каталог и карточка объявления
+│   ├── dashboard/          # Личный кабинет
+│   ├── auth/               # Логин и регистрация
+│   └── partials/           # listing-card, аналитика
+├── routes/web.php
+├── docker-compose.yml
+└── storage/app/
+    ├── onliner_listings.jsonl  # Результат парсинга
+    └── public/listings/        # Изображения объявлений
+```
+
+## Админ-панель
+
+URL: `http://bizhub/admin`
+
+Логин и пароль — из `.env` (`ADMIN_EMAIL`, `ADMIN_PASSWORD`), или создаются сидером `AdminUserSeeder`.
+
+## Парсинг Onliner
+
+```bash
+# 1. Спарсить 5 страниц (250 объявлений)
+php artisan onliner:parse
+
+# 2. Импортировать в БД
+php artisan onliner:import
+```
+
+Парсер сохраняет результат в `storage/app/onliner_listings.jsonl`. При повторном запуске дубликаты пропускаются (по `topic_id`).

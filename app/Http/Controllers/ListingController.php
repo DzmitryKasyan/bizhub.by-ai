@@ -55,10 +55,10 @@ class ListingController extends Controller
             $query->where('currency', $request->currency);
         }
 
-        if ($request->filled('q')) {
+        if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
-                $q->where('title', 'like', "%{$request->q}%")
-                    ->orWhere('description', 'like', "%{$request->q}%");
+                $q->where('title', 'like', "%{$request->search}%")
+                    ->orWhere('description', 'like', "%{$request->search}%");
             });
         }
 

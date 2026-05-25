@@ -292,7 +292,7 @@ $typeBadgeColors = [
                class="bg-white text-primary-700 font-bold px-10 py-4 rounded-2xl hover:bg-primary-50 transition-all shadow-2xl shadow-white/10 hover:shadow-white/20 hover:-translate-y-1 text-base btn-shine">
                 Подать объявление
             </a>
-            <a href="{{ route('about') }}"
+            <a href="{{ route('article.show', 'about') }}"
                class="border-2 border-white/30 text-white font-semibold px-10 py-4 rounded-2xl hover:bg-white/10 transition-all hover:border-white/50 text-base">
                 Узнать подробнее
             </a>

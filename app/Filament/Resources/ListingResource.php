@@ -19,6 +19,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Actions\Action;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
@@ -52,6 +53,12 @@ class ListingResource extends Resource
                 TextColumn::make('id')
                     ->label('ID')
                     ->sortable(),
+
+                ImageColumn::make('mainImage.path')
+                    ->label('Фото')
+                    ->square()
+                    ->size(40)
+                    ->defaultImageUrl(fn () => null),
 
                 TextColumn::make('title')
                     ->label('Заголовок')
@@ -252,6 +259,15 @@ class ListingResource extends Resource
                             ->formatStateUsing(fn (bool $state): string => $state ? 'Да' : 'Нет'),
                     ])
                     ->columns(3),
+
+                Section::make('Изображения')
+                    ->schema([
+                        \Filament\Infolists\Components\ImageEntry::make('mainImage.path')
+                            ->label('Главное изображение')
+                            ->size(200)
+                            ->defaultImageUrl(null),
+                    ])
+                    ->visible(fn (Listing $record): bool => $record->mainImage !== null),
 
                 Section::make('Описание')
                     ->schema([

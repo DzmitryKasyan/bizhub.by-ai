@@ -105,7 +105,7 @@
                 <h2 class="text-xl font-bold text-slate-900 mb-2">Написать нам</h2>
                 <p class="text-slate-500 text-sm mb-6">Заполните форму, и мы свяжемся с вами в ближайшее время</p>
 
-                <form action="#" method="POST" class="space-y-5">
+                <form action="{{ route('feedback') }}" method="POST" class="space-y-5">
                     @csrf
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
