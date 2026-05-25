@@ -9,6 +9,7 @@ use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ListingController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\PageController;
@@ -93,6 +94,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [FavoriteController::class, 'index'])->name('index');
         Route::post('/{listing}', [FavoriteController::class, 'toggle'])->name('toggle');
     });
+
+    // Reports
+    Route::post('/listings/{listing:slug}/report', [ReportController::class, 'store'])->name('listings.report');
 
     // Conversations & Messages
     Route::prefix('messages')->name('messages.')->group(function () {

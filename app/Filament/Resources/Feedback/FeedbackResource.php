@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\Feedback;
 
 use App\Filament\Resources\Feedback\Pages\CreateFeedback;
-use App\Filament\Resources\Feedback\Pages\EditFeedback;
 use App\Filament\Resources\Feedback\Pages\ListFeedback;
+use App\Filament\Resources\Feedback\Pages\ViewFeedback;
 use App\Filament\Resources\Feedback\Schemas\FeedbackForm;
 use App\Filament\Resources\Feedback\Tables\FeedbackTable;
 use App\Models\Feedback;
@@ -19,6 +19,16 @@ class FeedbackResource extends Resource
     protected static ?string $model = Feedback::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'info';
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -42,7 +52,7 @@ class FeedbackResource extends Resource
         return [
             'index' => ListFeedback::route('/'),
             'create' => CreateFeedback::route('/create'),
-            'edit' => EditFeedback::route('/{record}/edit'),
+            'view' => ViewFeedback::route('/{record}'),
         ];
     }
 }
