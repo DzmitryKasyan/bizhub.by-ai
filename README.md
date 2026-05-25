@@ -66,7 +66,7 @@ bash install-cron.sh
 
 **Вручную — добавить в crontab:**
 ```cron
-* * * * * cd /path/to/bizhub && docker compose exec -T app php artisan schedule:run >> storage/logs/cron.log 2>&1
+* * * * * cd /path/to/bizhub && php artisan schedule:run >> storage/logs/cron.log 2>&1
 ```
 
 Это запускает планировщик каждую минуту. Сами задачи описаны в `routes/console.php`:
