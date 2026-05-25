@@ -47,12 +47,25 @@ $metaDesc = $currentType
                 Найдено {{ $listings->total() }} {{ trans_choice('объявление|объявления|объявлений', $listings->total()) }}
             @endif
         </p>
-        @if($currentType === 'trust_management')
-            <a href="{{ route('article.show', 'trust-management') }}" class="inline-flex items-center gap-1.5 mt-2 text-xs text-primary-600 hover:text-primary-700 font-medium">
+        @php
+            $typeArticleMap = [
+                'sell_business'    => 'sell-business',
+                'buy_business'     => 'buy-business',
+                'seek_investment'  => 'seek-investment',
+                'offer_investment' => 'offer-investment',
+                'franchise'        => 'franchise',
+                'partnership'      => 'partnership',
+                'real_estate'      => 'real-estate',
+                'equipment'        => 'equipment',
+                'trust_management' => 'trust-management',
+            ];
+        @endphp
+        @if($currentType && isset($typeArticleMap[$currentType]))
+            <a href="{{ route('article.show', $typeArticleMap[$currentType]) }}" class="inline-flex items-center gap-1.5 mt-2 text-xs text-primary-600 hover:text-primary-700 font-medium">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                Что такое доверительное управление?
+                Подробнее о типе «{{ $typeLabels[$currentType] ?? $currentType }}»
             </a>
         @endif
     </div>

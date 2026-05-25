@@ -10,6 +10,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\ListingController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\PageController;
@@ -21,6 +22,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/rates', [HomeController::class, 'rates'])->name('rates');
+Route::get('/sitemap.xml', [SitemapController::class, 'index']);
+
 
 // Listings catalog
 Route::prefix('listings')->name('listings.')->group(function () {
