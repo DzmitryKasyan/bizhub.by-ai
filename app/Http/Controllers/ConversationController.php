@@ -32,9 +32,14 @@ class ConversationController extends Controller
     {
         abort_unless($conversation->hasParticipant(auth()->user()), 403);
 
+        $perPage = 50;
+        $totalMessages = $conversation->messages()->count();
+        $lastPage = (int) ceil($totalMessages / $perPage);
+        $page = (int) request()->get('page', $lastPage);
+
         $messages = $conversation->messages()
             ->with('sender')
-            ->paginate(50);
+            ->paginate($perPage, ['*'], 'page', max($page, 1));
 
         // Mark messages as read
         $conversation->messages()

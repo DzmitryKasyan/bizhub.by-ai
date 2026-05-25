@@ -110,6 +110,32 @@ $typeBadgeColors = [
     </div>
 </section>
 
+<!-- Exchange Rates Bar -->
+@if(!empty($exchangeRates))
+<section class="relative z-10">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <a href="{{ route('rates') }}" class="block bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-100 shadow-sm px-6 py-3 hover:shadow-md hover:border-primary-200 transition-all group">
+            <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
+                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Курсы валют</span>
+                @foreach($exchangeRates as $code => $rate)
+                    <span class="inline-flex items-center gap-1.5 text-sm">
+                        <span class="font-bold text-slate-700">{{ $code }}</span>
+                        <span class="text-slate-500">{{ number_format($rate, $code === 'BTC' ? 0 : ($code === 'ETH' ? 0 : 4), '.', ' ') }}</span>
+                        <span class="text-xs text-slate-400">Br</span>
+                    </span>
+                @endforeach
+                <span class="inline-flex items-center gap-1 text-xs text-primary-500 group-hover:text-primary-600 font-medium">
+                    Все курсы
+                    <svg class="w-3 h-3 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </span>
+            </div>
+        </a>
+    </div>
+</section>
+@endif
+
 <!-- Stats Section -->
 <section class="relative -mt-2 z-10">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">

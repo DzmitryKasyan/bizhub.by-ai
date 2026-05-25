@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 // ─── Public Routes ─────────────────────────────────────────────────────────────
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/rates', [HomeController::class, 'rates'])->name('rates');
 
 // Listings catalog
 Route::prefix('listings')->name('listings.')->group(function () {

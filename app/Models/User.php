@@ -162,6 +162,17 @@ class User extends Authenticatable implements FilamentUser, HasMedia
         $this->addMediaCollection('avatar')->singleFile();
     }
 
+    public function unreadMessagesCount(): int
+    {
+        return Conversation::query()
+            ->where(function ($q) {
+                $q->where('participant_one_id', $this->id)
+                  ->orWhere('participant_two_id', $this->id);
+            })
+            ->get()
+            ->sum(fn ($c) => $c->getUnreadCountFor($this));
+    }
+
     public function getAvatarUrlAttribute(): string
     {
         return $this->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=0D8ABC&color=fff';

@@ -13,13 +13,15 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
 
+        $unreadMessages = $user->unreadMessagesCount();
+
         $stats = [
             'total_listings' => $user->listings()->count(),
             'active_listings' => $user->listings()->where('status', ListingStatus::Active->value)->count(),
             'pending_listings' => $user->listings()->where('status', ListingStatus::Pending->value)->count(),
             'total_views' => $user->listings()->sum('views_count'),
             'total_favorites' => $user->listings()->sum('favorites_count'),
-            'unread_messages' => 0, // computed via conversations
+            'unread_messages' => $unreadMessages,
             'favorites_count' => $user->favorites()->count(),
         ];
 
