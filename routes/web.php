@@ -10,6 +10,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ListingController;
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Category;
@@ -39,8 +40,10 @@ Route::prefix('blog')->name('blog.')->group(function () {
 
 // Static pages (about, terms, privacy, etc.)
 Route::get('/page/{page:slug}', [PageController::class, 'show'])->name('page.show');
+Route::get('/article/{article:slug}', [ArticleController::class, 'show'])->name('article.show');
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/contacts', [PageController::class, 'contacts'])->name('contacts');
+Route::post('/feedback', [PageController::class, 'feedback'])->name('feedback');
 Route::get('/terms', [PageController::class, 'terms'])->name('terms');
 Route::get('/privacy', [PageController::class, 'privacy'])->name('privacy');
 

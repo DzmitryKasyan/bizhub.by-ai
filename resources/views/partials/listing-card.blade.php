@@ -70,7 +70,7 @@ $typeLabel  = $listing->type->label();
                 <span class="text-xl font-bold text-slate-900">
                     {{ number_format($listing->price, 0, '.', ' ') }}
                 </span>
-                <span class="text-slate-500 font-medium ml-1">{{ $listing->currency ?? 'BYN' }}</span>
+                <span class="text-slate-500 font-medium ml-1">{{ $listing->currency ?? 'Br' }}</span>
                 @if($listing->price_negotiable)
                     <span class="text-slate-400 text-xs ml-1">· торг</span>
                 @endif

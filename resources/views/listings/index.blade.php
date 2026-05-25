@@ -119,7 +119,7 @@ $metaDesc = $currentType
 
                     <!-- Price Range -->
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-2">Цена, BYN</label>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Цена, Br</label>
                         <div class="flex gap-2">
                             <input type="number"
                                    name="price_min"
@@ -267,7 +267,7 @@ $metaDesc = $currentType
                                     <span class="text-lg font-bold text-slate-900">
                                         {{ number_format($listing->price, 0, '.', ' ') }}
                                     </span>
-                                    <span class="text-slate-500 text-sm ml-1">{{ $listing->currency ?? 'BYN' }}</span>
+                                    <span class="text-slate-500 text-sm ml-1">{{ $listing->currency ?? 'Br' }}</span>
                                 @else
                                     <span class="text-slate-500 text-sm">По договорённости</span>
                                 @endif

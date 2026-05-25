@@ -14,7 +14,7 @@ enum Currency: string
     public function label(): string
     {
         return match($this) {
-            self::BYN => 'Белорусский рубль (BYN)',
+            self::BYN => 'Белорусский рубль (Br)',
             self::USD => 'Доллар США (USD)',
             self::EUR => 'Евро (EUR)',
             self::RUB => 'Российский рубль (RUB)',
@@ -24,7 +24,7 @@ enum Currency: string
     public function symbol(): string
     {
         return match($this) {
-            self::BYN => 'Br',
+            self::BYN => 'ƃ',
             self::USD => '$',
             self::EUR => '€',
             self::RUB => '₽',

@@ -9,11 +9,11 @@
 
         <!-- Header -->
         <div class="text-center mb-8">
-            <a href="{{ route('home') }}" class="inline-flex items-center gap-2 mb-6">
-                <div class="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center">
-                    <span class="text-white font-bold text-base">B</span>
+            <a href="{{ route('home') }}" class="inline-flex items-center gap-2.5 mb-6 group">
+                <div class="w-9 h-9 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/30 group-hover:shadow-primary-500/50 transition-shadow">
+                    <span class="text-white font-bold text-sm">B</span>
                 </div>
-                <span class="text-2xl font-bold text-primary-600">BizHub<span class="text-slate-900">.by</span></span>
+                <span class="text-xl font-bold bg-gradient-to-r from-primary-700 to-accent-600 bg-clip-text text-transparent">BizHub<span class="text-slate-700">.by</span></span>
             </a>
             <h1 class="text-2xl font-bold text-slate-900">Вход в аккаунт</h1>
             <p class="text-slate-500 text-sm mt-2">Войдите, чтобы управлять объявлениями</p>

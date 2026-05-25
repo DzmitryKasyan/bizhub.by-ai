@@ -104,7 +104,7 @@ $statusConfig = [
                                         </a>
                                         @if($listing->price)
                                             <p class="text-xs text-slate-400 mt-0.5">
-                                                {{ number_format($listing->price, 0, '.', ' ') }} {{ $listing->currency ?? 'BYN' }}
+                                                {{ number_format($listing->price, 0, '.', ' ') }} {{ $listing->currency ?? 'Br' }}
                                             </p>
                                         @else
                                             <p class="text-xs text-slate-400 mt-0.5">По договорённости</p>

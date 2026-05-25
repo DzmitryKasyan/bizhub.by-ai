@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
             AdminUserSeeder::class,
             CategorySeeder::class,
             LocationSeeder::class,
+            ArticleSeeder::class,
         ]);
     }
 }

@@ -259,7 +259,7 @@
                                    value="{{ old('monthly_revenue', $listing->monthly_revenue) }}"
                                    min="0" step="1" placeholder="0"
                                    class="w-full pl-4 pr-16 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300">
-                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">BYN</span>
+                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">Br</span>
                         </div>
                     </div>
                     <div>
@@ -269,7 +269,7 @@
                                    value="{{ old('monthly_profit', $listing->monthly_profit) }}"
                                    min="0" step="1" placeholder="0"
                                    class="w-full pl-4 pr-16 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300">
-                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">BYN</span>
+                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">Br</span>
                         </div>
                     </div>
                     <div>
@@ -289,7 +289,7 @@
                                    value="{{ old('investment_amount', $listing->investment_amount) }}"
                                    min="0" step="1" placeholder="0"
                                    class="w-full pl-4 pr-16 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300">
-                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">BYN</span>
+                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">Br</span>
                         </div>
                     </div>
                 </div>
