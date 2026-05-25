@@ -45,9 +45,9 @@ $typeBadgeColors = [
             </div>
 
             <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight mb-6 tracking-tight">
-                Платформа для покупки<br>
-                и продажи бизнеса<br>
-                <span class="text-primary-400">в Беларуси</span>
+                Платформа для<br>
+                <span class="bg-gradient-to-r from-primary-300 via-purple-300 to-accent-300 bg-clip-text text-transparent">покупки и продажи</span><br>
+                бизнеса в Беларуси
             </h1>
 
             <p class="text-slate-300 text-lg md:text-xl mb-12 leading-relaxed max-w-2xl mx-auto font-light">
@@ -191,6 +191,18 @@ $typeBadgeColors = [
                     @endif
                 </a>
             @endforeach
+
+                <!-- All Categories link -->
+                <a href="{{ route('listings.index') }}"
+                   class="category-card bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl p-5 text-center hover:shadow-xl hover:shadow-primary-500/25 border border-primary-400 hover:border-primary-300 transition-all group card-3d">
+                    <div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-all category-icon">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                        </svg>
+                    </div>
+                    <p class="text-white font-semibold text-sm leading-tight mb-1">Все категории</p>
+                    <p class="text-primary-100 text-xs font-medium">{{ number_format($stats['total_listings'] ?? 0, 0, '.', ' ') }} объявл.</p>
+                </a>
         </div>
     </div>
 </section>
@@ -198,16 +210,18 @@ $typeBadgeColors = [
 
 <!-- Recent Listings Section -->
 @if(isset($recentListings) && $recentListings->count())
-<section class="py-20">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<section class="py-20 bg-gradient-to-br from-slate-900 via-primary-900 to-slate-900 relative overflow-hidden">
+    <div class="glow-orb w-80 h-80 bg-primary-600 top-0 right-0 opacity-15"></div>
+    <div class="glow-orb w-64 h-64 bg-accent-600 bottom-0 left-0 opacity-10"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div class="flex items-center justify-between mb-10">
             <div>
-                <span class="inline-block px-4 py-1.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wider mb-4">Новое</span>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">Свежие объявления</h2>
-                <p class="text-slate-500 text-base mt-2">Только что добавлены на сайт</p>
+                <span class="inline-block px-4 py-1.5 rounded-full bg-emerald-400/20 text-emerald-300 text-xs font-bold uppercase tracking-wider mb-4">Новое</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">Свежие объявления</h2>
+                <p class="text-slate-400 text-base mt-2">Только что добавлены на сайт</p>
             </div>
             <a href="{{ route('listings.index') }}"
-               class="hidden sm:flex items-center gap-2 text-primary-600 hover:text-primary-700 font-semibold text-sm transition-colors group">
+               class="hidden sm:flex items-center gap-2 text-primary-400 hover:text-primary-300 font-semibold text-sm transition-colors group">
                 Смотреть все
                 <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -223,6 +237,45 @@ $typeBadgeColors = [
     </div>
 </section>
 @endif
+
+<!-- How it Works -->
+<section class="py-20 bg-slate-50 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <span class="inline-block px-4 py-1.5 rounded-full bg-accent-100 text-accent-700 text-xs font-bold uppercase tracking-wider mb-4">Как это работает</span>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">Три простых шага к сделке</h2>
+            <p class="text-slate-500 text-base max-w-lg mx-auto">Мы сделали процесс максимально простым и безопасным для всех сторон</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8 relative">
+            <div class="hidden md:block absolute top-24 left-1/6 right-1/6 h-0.5 bg-gradient-to-r from-primary-200 via-primary-400 to-accent-400"></div>
+
+            <div class="relative text-center group">
+                <div class="w-20 h-20 bg-gradient-to-br from-primary-500 to-primary-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-primary-500/30 group-hover:scale-110 transition-transform duration-300 relative z-10">
+                    <span class="text-3xl font-black text-white">1</span>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-3">Разместите объявление</h3>
+                <p class="text-slate-500 text-sm leading-relaxed max-w-xs mx-auto">Создайте подробное объявление о продаже бизнеса, поиске инвестиций или франшизе за 5 минут</p>
+            </div>
+
+            <div class="relative text-center group">
+                <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-purple-500/30 group-hover:scale-110 transition-transform duration-300 relative z-10">
+                    <span class="text-3xl font-black text-white">2</span>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-3">Получайте отклики</h3>
+                <p class="text-slate-500 text-sm leading-relaxed max-w-xs mx-auto">Ваше объявление увидят тысячи потенциальных покупателей и инвесторов</p>
+            </div>
+
+            <div class="relative text-center group">
+                <div class="w-20 h-20 bg-gradient-to-br from-accent-500 to-accent-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-accent-500/30 group-hover:scale-110 transition-transform duration-300 relative z-10">
+                    <span class="text-3xl font-black text-white">3</span>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-3">Заключите сделку</h3>
+                <p class="text-slate-500 text-sm leading-relaxed max-w-xs mx-auto">Общайтесь напрямую, договаривайтесь о цене и условиях, совершайте безопасную сделку</p>
+            </div>
+        </div>
+    </div>
+</section>
 
 <!-- CTA Section -->
 <section class="py-24 relative overflow-hidden">
