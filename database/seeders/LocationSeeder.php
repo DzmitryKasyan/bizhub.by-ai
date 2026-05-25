@@ -12,13 +12,15 @@ class LocationSeeder extends Seeder
     public function run(): void
     {
         // Belarus
-        $belarus = Location::create([
-            'name' => 'Беларусь',
-            'slug' => 'belarus',
-            'type' => 'country',
-            'latitude' => 53.7098,
-            'longitude' => 27.9534,
-        ]);
+        $belarus = Location::firstOrCreate(
+            ['slug' => 'belarus', 'parent_id' => null],
+            [
+                'name' => 'Беларусь',
+                'type' => 'country',
+                'latitude' => 53.7098,
+                'longitude' => 27.9534,
+            ]
+        );
 
         $regions = [
             [
@@ -118,15 +120,16 @@ class LocationSeeder extends Seeder
             $cities = $regionData['cities'] ?? [];
             unset($regionData['cities']);
 
-            $region = Location::create(array_merge($regionData, [
-                'parent_id' => $belarus->id,
-            ]));
+            $region = Location::firstOrCreate(
+                ['slug' => $regionData['slug'], 'parent_id' => $belarus->id],
+                $regionData
+            );
 
             foreach ($cities as $cityData) {
-                Location::create(array_merge($cityData, [
-                    'parent_id' => $region->id,
-                    'type' => 'city',
-                ]));
+                Location::firstOrCreate(
+                    ['slug' => $cityData['slug'], 'parent_id' => $region->id],
+                    array_merge($cityData, ['type' => 'city'])
+                );
             }
         }
 
