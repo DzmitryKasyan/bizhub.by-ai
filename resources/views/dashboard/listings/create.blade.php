@@ -6,15 +6,15 @@
 
 <!-- Page Header -->
 <div class="mb-6">
-    <div class="flex items-center gap-2 text-sm text-gray-500 mb-2">
-        <a href="{{ route('my-listings.index') }}" class="hover:text-blue-600 transition-colors">Мои объявления</a>
-        <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="flex items-center gap-2 text-sm text-slate-500 mb-2">
+        <a href="{{ route('my-listings.index') }}" class="hover:text-primary-600 transition-colors">Мои объявления</a>
+        <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
         </svg>
-        <span class="text-gray-700">Новое объявление</span>
+        <span class="text-slate-700">Новое объявление</span>
     </div>
-    <h1 class="text-2xl font-bold text-gray-900">Подать объявление</h1>
-    <p class="text-gray-500 text-sm mt-1">Заполните форму — чем подробнее, тем быстрее найдёте покупателя</p>
+    <h1 class="text-2xl font-bold text-slate-900">Подать объявление</h1>
+    <p class="text-slate-500 text-sm mt-1">Заполните форму — чем подробнее, тем быстрее найдёте покупателя</p>
 </div>
 
 <!-- Validation Errors -->
@@ -42,10 +42,10 @@
     <div class="space-y-6">
 
         <!-- Section 1: Main Info -->
-        <div class="bg-white rounded-xl border border-gray-100 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-                <h2 class="font-semibold text-gray-900 flex items-center gap-2">
-                    <span class="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">1</span>
+        <div class="bg-white rounded-xl border border-slate-100 overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+                <h2 class="font-semibold text-slate-900 flex items-center gap-2">
+                    <span class="w-6 h-6 bg-primary-600 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">1</span>
                     Основная информация
                 </h2>
             </div>
@@ -53,14 +53,14 @@
 
                 <!-- Type -->
                 <div>
-                    <label for="type" class="block text-sm font-medium text-gray-700 mb-1.5">
+                    <label for="type" class="block text-sm font-medium text-slate-700 mb-1.5">
                         Тип объявления <span class="text-red-500">*</span>
                     </label>
                     <select id="type"
                             name="type"
                             required
                             x-model="selectedType"
-                            class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white @error('type') border-red-400 @enderror">
+                            class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 bg-white @error('type') border-red-400 @enderror">
                         <option value="" disabled>Выберите тип</option>
                         @if(isset($types))
                             @foreach($types as $value => $label)
@@ -84,7 +84,7 @@
 
                 <!-- Title -->
                 <div>
-                    <label for="title" class="block text-sm font-medium text-gray-700 mb-1.5">
+                    <label for="title" class="block text-sm font-medium text-slate-700 mb-1.5">
                         Заголовок объявления <span class="text-red-500">*</span>
                     </label>
                     <input type="text"
@@ -94,24 +94,24 @@
                            required
                            maxlength="255"
                            placeholder="Например: Продаю кофейню в центре Минска"
-                           class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 @error('title') border-red-400 @enderror">
+                           class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 @error('title') border-red-400 @enderror">
                     @error('title')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
-                    <p class="text-xs text-gray-400 mt-1">Максимум 255 символов</p>
+                    <p class="text-xs text-slate-400 mt-1">Максимум 255 символов</p>
                 </div>
 
                 <!-- Category & Subcategory -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label for="category_id" class="block text-sm font-medium text-gray-700 mb-1.5">
+                        <label for="category_id" class="block text-sm font-medium text-slate-700 mb-1.5">
                             Категория <span class="text-red-500">*</span>
                         </label>
                         <select id="category_id"
                                 name="category_id"
                                 required
                                 x-model="selectedCategory"
-                                class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white @error('category_id') border-red-400 @enderror">
+                                class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 bg-white @error('category_id') border-red-400 @enderror">
                             <option value="">Выберите категорию</option>
                             @if(isset($categories))
                                 @foreach($categories as $category)
@@ -127,13 +127,13 @@
                     </div>
 
                     <div>
-                        <label for="subcategory_id" class="block text-sm font-medium text-gray-700 mb-1.5">
+                        <label for="subcategory_id" class="block text-sm font-medium text-slate-700 mb-1.5">
                             Подкатегория
-                            <span class="text-gray-400 text-xs font-normal">(необязательно)</span>
+                            <span class="text-slate-400 text-xs font-normal">(необязательно)</span>
                         </label>
                         <select id="subcategory_id"
                                 name="subcategory_id"
-                                class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white"
+                                class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 bg-white"
                                 :disabled="!selectedCategory">
                             <option value="">Сначала выберите категорию</option>
                             @if(isset($subcategories) && old('category_id'))
@@ -149,13 +149,13 @@
 
                 <!-- Location -->
                 <div>
-                    <label for="location" class="block text-sm font-medium text-gray-700 mb-1.5">
+                    <label for="location" class="block text-sm font-medium text-slate-700 mb-1.5">
                         Местоположение <span class="text-red-500">*</span>
                     </label>
                     <select id="location"
                             name="location_id"
                             required
-                            class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white @error('location_id') border-red-400 @enderror">
+                            class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 bg-white @error('location_id') border-red-400 @enderror">
                         <option value="">Выберите город / регион</option>
                         @foreach($locations as $loc)
                             <option value="{{ $loc->id }}" {{ old('location_id') == $loc->id ? 'selected' : '' }}>{{ $loc->name }}</option>
@@ -171,7 +171,7 @@
 
                 <!-- Description -->
                 <div>
-                    <label for="description" class="block text-sm font-medium text-gray-700 mb-1.5">
+                    <label for="description" class="block text-sm font-medium text-slate-700 mb-1.5">
                         Описание <span class="text-red-500">*</span>
                     </label>
                     <textarea id="description"
@@ -179,20 +179,20 @@
                               rows="6"
                               required
                               placeholder="Подробно опишите ваш бизнес: история, текущее состояние, перспективы, причина продажи..."
-                              class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 resize-y @error('description') border-red-400 @enderror">{{ old('description') }}</textarea>
+                              class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 resize-y @error('description') border-red-400 @enderror">{{ old('description') }}</textarea>
                     @error('description')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
-                    <p class="text-xs text-gray-400 mt-1">Минимум 50 символов. Чем подробнее — тем лучше.</p>
+                    <p class="text-xs text-slate-400 mt-1">Минимум 50 символов. Чем подробнее — тем лучше.</p>
                 </div>
             </div>
         </div>
 
         <!-- Section 2: Price -->
-        <div class="bg-white rounded-xl border border-gray-100 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-                <h2 class="font-semibold text-gray-900 flex items-center gap-2">
-                    <span class="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">2</span>
+        <div class="bg-white rounded-xl border border-slate-100 overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+                <h2 class="font-semibold text-slate-900 flex items-center gap-2">
+                    <span class="w-6 h-6 bg-primary-600 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">2</span>
                     Стоимость
                 </h2>
             </div>
@@ -200,7 +200,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
                     <!-- Price Min -->
                     <div>
-                        <label for="price" class="block text-sm font-medium text-gray-700 mb-1.5">
+                        <label for="price" class="block text-sm font-medium text-slate-700 mb-1.5">
                             Цена (от)
                         </label>
                         <input type="number"
@@ -211,7 +211,7 @@
                                step="1"
                                placeholder="0"
                                :disabled="priceNegotiable"
-                               class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 disabled:bg-gray-50 disabled:text-gray-400 @error('price') border-red-400 @enderror">
+                               class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 disabled:bg-slate-50 disabled:text-slate-400 @error('price') border-red-400 @enderror">
                         @error('price')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
@@ -219,8 +219,8 @@
 
                     <!-- Price Max -->
                     <div>
-                        <label for="price_max" class="block text-sm font-medium text-gray-700 mb-1.5">
-                            Цена (до) <span class="text-gray-400 text-xs font-normal">(диапазон)</span>
+                        <label for="price_max" class="block text-sm font-medium text-slate-700 mb-1.5">
+                            Цена (до) <span class="text-slate-400 text-xs font-normal">(диапазон)</span>
                         </label>
                         <input type="number"
                                id="price_max"
@@ -230,18 +230,18 @@
                                step="1"
                                placeholder="0"
                                :disabled="priceNegotiable"
-                               class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 disabled:bg-gray-50 disabled:text-gray-400">
+                               class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 disabled:bg-slate-50 disabled:text-slate-400">
                     </div>
 
                     <!-- Currency -->
                     <div>
-                        <label for="currency" class="block text-sm font-medium text-gray-700 mb-1.5">
+                        <label for="currency" class="block text-sm font-medium text-slate-700 mb-1.5">
                             Валюта <span class="text-red-500">*</span>
                         </label>
                         <select id="currency"
                                 name="currency"
                                 required
-                                class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white">
+                                class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 bg-white">
                             @foreach($currencies as $curValue => $curLabel)
                                 <option value="{{ $curValue }}" {{ old('currency', 'BYN') === $curValue ? 'selected' : '' }}>{{ $curValue }} — {{ $curLabel }}</option>
                             @endforeach
@@ -257,26 +257,26 @@
                            value="1"
                            x-model="priceNegotiable"
                            {{ old('price_negotiable') ? 'checked' : '' }}
-                           class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-300">
-                    <span class="text-sm text-gray-700">Цена договорная (торг уместен)</span>
+                           class="w-4 h-4 text-primary-600 border-slate-300 rounded focus:ring-primary-300">
+                    <span class="text-sm text-slate-700">Цена договорная (торг уместен)</span>
                 </label>
             </div>
         </div>
 
         <!-- Section 3: Financials -->
-        <div class="bg-white rounded-xl border border-gray-100 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-                <h2 class="font-semibold text-gray-900 flex items-center gap-2">
-                    <span class="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">3</span>
+        <div class="bg-white rounded-xl border border-slate-100 overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+                <h2 class="font-semibold text-slate-900 flex items-center gap-2">
+                    <span class="w-6 h-6 bg-primary-600 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">3</span>
                     Финансовые показатели
-                    <span class="text-gray-400 text-xs font-normal">(необязательно)</span>
+                    <span class="text-slate-400 text-xs font-normal">(необязательно)</span>
                 </h2>
             </div>
             <div class="p-6">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <!-- Monthly Revenue -->
                     <div>
-                        <label for="monthly_revenue" class="block text-sm font-medium text-gray-700 mb-1.5">
+                        <label for="monthly_revenue" class="block text-sm font-medium text-slate-700 mb-1.5">
                             Выручка в месяц
                         </label>
                         <div class="relative">
@@ -287,14 +287,14 @@
                                    min="0"
                                    step="1"
                                    placeholder="0"
-                                   class="w-full pl-4 pr-16 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
-                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">BYN</span>
+                                   class="w-full pl-4 pr-16 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300">
+                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">BYN</span>
                         </div>
                     </div>
 
                     <!-- Monthly Profit -->
                     <div>
-                        <label for="monthly_profit" class="block text-sm font-medium text-gray-700 mb-1.5">
+                        <label for="monthly_profit" class="block text-sm font-medium text-slate-700 mb-1.5">
                             Прибыль в месяц
                         </label>
                         <div class="relative">
@@ -305,14 +305,14 @@
                                    min="0"
                                    step="1"
                                    placeholder="0"
-                                   class="w-full pl-4 pr-16 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
-                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">BYN</span>
+                                   class="w-full pl-4 pr-16 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300">
+                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">BYN</span>
                         </div>
                     </div>
 
                     <!-- Payback Months -->
                     <div>
-                        <label for="payback_months" class="block text-sm font-medium text-gray-700 mb-1.5">
+                        <label for="payback_months" class="block text-sm font-medium text-slate-700 mb-1.5">
                             Срок окупаемости
                         </label>
                         <div class="relative">
@@ -324,14 +324,14 @@
                                    max="360"
                                    step="1"
                                    placeholder="12"
-                                   class="w-full pl-4 pr-20 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
-                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">мес.</span>
+                                   class="w-full pl-4 pr-20 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300">
+                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">мес.</span>
                         </div>
                     </div>
 
                     <!-- Investment Amount -->
                     <div>
-                        <label for="investment_amount" class="block text-sm font-medium text-gray-700 mb-1.5">
+                        <label for="investment_amount" class="block text-sm font-medium text-slate-700 mb-1.5">
                             Сумма инвестиций
                         </label>
                         <div class="relative">
@@ -342,8 +342,8 @@
                                    min="0"
                                    step="1"
                                    placeholder="0"
-                                   class="w-full pl-4 pr-16 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
-                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">BYN</span>
+                                   class="w-full pl-4 pr-16 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300">
+                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">BYN</span>
                         </div>
                     </div>
                 </div>
@@ -351,19 +351,19 @@
         </div>
 
         <!-- Section 4: Business Details -->
-        <div class="bg-white rounded-xl border border-gray-100 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-                <h2 class="font-semibold text-gray-900 flex items-center gap-2">
-                    <span class="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">4</span>
+        <div class="bg-white rounded-xl border border-slate-100 overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+                <h2 class="font-semibold text-slate-900 flex items-center gap-2">
+                    <span class="w-6 h-6 bg-primary-600 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">4</span>
                     Детали бизнеса
-                    <span class="text-gray-400 text-xs font-normal">(необязательно)</span>
+                    <span class="text-slate-400 text-xs font-normal">(необязательно)</span>
                 </h2>
             </div>
             <div class="p-6">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <!-- Year Founded -->
                     <div>
-                        <label for="year_founded" class="block text-sm font-medium text-gray-700 mb-1.5">
+                        <label for="year_founded" class="block text-sm font-medium text-slate-700 mb-1.5">
                             Год основания
                         </label>
                         <input type="number"
@@ -374,12 +374,12 @@
                                max="{{ date('Y') }}"
                                step="1"
                                placeholder="{{ date('Y') }}"
-                               class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
+                               class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300">
                     </div>
 
                     <!-- Employees Count -->
                     <div>
-                        <label for="employees_count" class="block text-sm font-medium text-gray-700 mb-1.5">
+                        <label for="employees_count" class="block text-sm font-medium text-slate-700 mb-1.5">
                             Количество сотрудников
                         </label>
                         <input type="number"
@@ -389,17 +389,17 @@
                                min="0"
                                step="1"
                                placeholder="0"
-                               class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
+                               class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300">
                     </div>
 
                     <!-- Ownership Type -->
                     <div>
-                        <label for="ownership_type" class="block text-sm font-medium text-gray-700 mb-1.5">
+                        <label for="ownership_type" class="block text-sm font-medium text-slate-700 mb-1.5">
                             Форма собственности
                         </label>
                         <select id="ownership_type"
                                 name="ownership_type"
-                                class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 bg-white">
+                                class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 bg-white">
                             <option value="">Не указано</option>
                             @foreach(\App\Enums\OwnershipType::cases() as $ot)
                                 <option value="{{ $ot->value }}" {{ old('ownership_type') === $ot->value ? 'selected' : '' }}>{{ $ot->label() }}</option>
@@ -409,7 +409,7 @@
 
                     <!-- Sale Reason -->
                     <div>
-                        <label for="sale_reason" class="block text-sm font-medium text-gray-700 mb-1.5">
+                        <label for="sale_reason" class="block text-sm font-medium text-slate-700 mb-1.5">
                             Причина продажи
                         </label>
                         <input type="text"
@@ -418,33 +418,33 @@
                                value="{{ old('sale_reason') }}"
                                maxlength="255"
                                placeholder="Переезд, смена деятельности..."
-                               class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
+                               class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300">
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Section 5: Images -->
-        <div class="bg-white rounded-xl border border-gray-100 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-                <h2 class="font-semibold text-gray-900 flex items-center gap-2">
-                    <span class="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">5</span>
+        <div class="bg-white rounded-xl border border-slate-100 overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+                <h2 class="font-semibold text-slate-900 flex items-center gap-2">
+                    <span class="w-6 h-6 bg-primary-600 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">5</span>
                     Фотографии
-                    <span class="text-gray-400 text-xs font-normal">(необязательно, но рекомендуется)</span>
+                    <span class="text-slate-400 text-xs font-normal">(необязательно, но рекомендуется)</span>
                 </h2>
             </div>
             <div class="p-6" x-data="{ files: [] }">
                 <label class="block w-full cursor-pointer">
-                    <div class="border-2 border-dashed border-gray-200 hover:border-blue-300 rounded-xl p-8 text-center transition-colors"
+                    <div class="border-2 border-dashed border-slate-200 hover:border-primary-300 rounded-xl p-8 text-center transition-colors"
                          x-on:dragover.prevent
                          x-on:drop.prevent="
                              files = [...$event.dataTransfer.files];
                          ">
-                        <svg class="w-10 h-10 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-10 h-10 text-slate-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                         </svg>
-                        <p class="text-sm font-medium text-gray-700 mb-1">Загрузите фотографии</p>
-                        <p class="text-xs text-gray-400">Перетащите файлы или нажмите для выбора. JPG, PNG, WEBP до 5 МБ каждый</p>
+                        <p class="text-sm font-medium text-slate-700 mb-1">Загрузите фотографии</p>
+                        <p class="text-xs text-slate-400">Перетащите файлы или нажмите для выбора. JPG, PNG, WEBP до 5 МБ каждый</p>
                     </div>
                     <input type="file"
                            name="images[]"
@@ -457,10 +457,10 @@
                 <!-- Preview -->
                 <template x-if="files.length > 0">
                     <div class="mt-4">
-                        <p class="text-xs text-gray-500 mb-2">Выбрано файлов: <span x-text="files.length"></span></p>
+                        <p class="text-xs text-slate-500 mb-2">Выбрано файлов: <span x-text="files.length"></span></p>
                         <div class="flex flex-wrap gap-2">
                             <template x-for="(file, i) in files" :key="i">
-                                <div class="relative w-20 h-20 rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
+                                <div class="relative w-20 h-20 rounded-lg overflow-hidden bg-slate-100 border border-slate-200">
                                     <img :src="URL.createObjectURL(file)"
                                          class="w-full h-full object-cover">
                                 </div>
@@ -472,22 +472,22 @@
         </div>
 
         <!-- Submit -->
-        <div class="flex items-center justify-between bg-white rounded-xl border border-gray-100 p-5">
+        <div class="flex items-center justify-between bg-white rounded-xl border border-slate-100 p-5">
             <a href="{{ route('my-listings.index') }}"
-               class="text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors">
+               class="text-slate-500 hover:text-slate-700 text-sm font-medium transition-colors">
                 ← Отмена
             </a>
             <div class="flex gap-3">
                 <button type="submit"
                         name="action"
                         value="draft"
-                        class="px-6 py-2.5 border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition-colors">
+                        class="px-6 py-2.5 border border-slate-200 text-slate-700 text-sm font-medium rounded-xl hover:bg-slate-50 transition-colors">
                     Сохранить черновик
                 </button>
                 <button type="submit"
                         name="action"
                         value="publish"
-                        class="px-8 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-colors">
+                        class="px-8 py-2.5 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-xl transition-colors">
                     Опубликовать
                 </button>
             </div>

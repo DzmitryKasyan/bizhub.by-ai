@@ -11,30 +11,30 @@ $typeLabels = $typeLabels ?? [
 ];
 
 $typeBadgeColors = $typeBadgeColors ?? [
-    'sell_business'    => 'bg-blue-100 text-blue-700',
+    'sell_business'    => 'bg-primary-100 text-primary-700',
     'buy_business'     => 'bg-purple-100 text-purple-700',
-    'seek_investment'  => 'bg-green-100 text-green-700',
-    'offer_investment' => 'bg-emerald-100 text-emerald-700',
+    'seek_investment'  => 'bg-emerald-100 text-emerald-700',
+    'offer_investment' => 'bg-teal-100 text-teal-700',
     'franchise'        => 'bg-orange-100 text-orange-700',
-    'partnership'      => 'bg-yellow-100 text-yellow-700',
+    'partnership'      => 'bg-amber-100 text-amber-700',
     'real_estate'      => 'bg-indigo-100 text-indigo-700',
-    'equipment'        => 'bg-gray-100 text-gray-700',
+    'equipment'        => 'bg-slate-100 text-slate-700',
 ];
 
-$badgeClass = $typeBadgeColors[$listing->type->value] ?? 'bg-gray-100 text-gray-700';
+$badgeClass = $typeBadgeColors[$listing->type->value] ?? 'bg-slate-100 text-slate-700';
 $typeLabel  = $listing->type->label();
 @endphp
 
-<article class="bg-white rounded-xl overflow-hidden border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all group">
+<article class="bg-white rounded-2xl overflow-hidden border border-slate-100 hover:shadow-xl hover:shadow-primary-500/10 hover:border-primary-100 transition-all group card-3d">
     <!-- Image -->
-    <a href="{{ route('listings.show', $listing->slug) }}" class="block relative overflow-hidden aspect-video bg-gray-100">
+    <a href="{{ route('listings.show', $listing->slug) }}" class="block relative overflow-hidden aspect-video bg-slate-100">
         @if($listing->main_image)
             <img src="{{ asset('storage/' . $listing->main_image) }}"
                  alt="{{ $listing->title }}"
-                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
         @else
-            <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
-                <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">
+                <svg class="w-12 h-12 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                 </svg>
             </div>
@@ -42,14 +42,14 @@ $typeLabel  = $listing->type->label();
 
         <!-- Type Badge on image -->
         <div class="absolute top-3 left-3">
-            <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold {{ $badgeClass }} backdrop-blur-sm">
+            <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold {{ $badgeClass }} backdrop-blur-sm shadow-sm">
                 {{ $typeLabel }}
             </span>
         </div>
 
         @if($listing->is_featured ?? false)
             <div class="absolute top-3 right-3">
-                <span class="inline-flex items-center px-2 py-1 rounded-lg text-xs font-semibold bg-amber-400 text-amber-900">
+                <span class="inline-flex items-center px-2 py-1 rounded-lg text-xs font-semibold bg-gradient-to-r from-amber-400 to-amber-500 text-white shadow-sm">
                     ТОП
                 </span>
             </div>
@@ -57,30 +57,30 @@ $typeLabel  = $listing->type->label();
     </a>
 
     <!-- Content -->
-    <div class="p-4">
+    <div class="p-5">
         <!-- Title -->
         <a href="{{ route('listings.show', $listing->slug) }}"
-           class="block font-semibold text-gray-900 hover:text-blue-600 transition-colors leading-snug mb-2 line-clamp-2">
+           class="block font-semibold text-slate-900 hover:text-primary-600 transition-colors leading-snug mb-2 line-clamp-2">
             {{ $listing->title }}
         </a>
 
         <!-- Price -->
         <div class="mb-3">
             @if($listing->price)
-                <span class="text-xl font-bold text-gray-900">
+                <span class="text-xl font-bold text-slate-900">
                     {{ number_format($listing->price, 0, '.', ' ') }}
                 </span>
-                <span class="text-gray-500 font-medium ml-1">{{ $listing->currency ?? 'BYN' }}</span>
+                <span class="text-slate-500 font-medium ml-1">{{ $listing->currency ?? 'BYN' }}</span>
                 @if($listing->price_negotiable)
-                    <span class="text-gray-400 text-xs ml-1">· торг</span>
+                    <span class="text-slate-400 text-xs ml-1">· торг</span>
                 @endif
             @else
-                <span class="text-gray-500 text-sm font-medium">По договорённости</span>
+                <span class="text-slate-500 text-sm font-medium">По договорённости</span>
             @endif
         </div>
 
         <!-- Meta -->
-        <div class="flex items-center justify-between text-xs text-gray-400 pt-3 border-t border-gray-50">
+        <div class="flex items-center justify-between text-xs text-slate-400 pt-3 border-t border-slate-50">
             <div class="flex items-center gap-1">
                 @if($listing->location)
                     <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
