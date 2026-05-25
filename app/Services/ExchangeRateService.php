@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Http;
 
 final class ExchangeRateService
 {
-    private const CACHE_KEY = 'exchange_rates';
+    public const CACHE_KEY = 'exchange_rates';
     private const CACHE_TTL = 3600;
 
     /**

@@ -6,6 +6,7 @@ namespace App\Console\Commands;
 
 use App\Services\ExchangeRateService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 
 final class ExchangeRatesUpdateCommand extends Command
 {
@@ -16,6 +17,7 @@ final class ExchangeRatesUpdateCommand extends Command
     {
         $this->info('Fetching exchange rates...');
 
+        Cache::forget(ExchangeRateService::CACHE_KEY);
         $data = $rates->getRates();
         $ratesList = $data['rates'];
 
