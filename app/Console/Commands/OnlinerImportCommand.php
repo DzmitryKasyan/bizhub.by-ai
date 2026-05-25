@@ -10,6 +10,7 @@ use App\Models\ListingImage;
 use App\Models\Location;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
+use Laravel\Scout\Searchable;
 
 class OnlinerImportCommand extends Command
 {
@@ -57,6 +58,16 @@ class OnlinerImportCommand extends Command
         $now = now();
         $imported = 0;
 
+        Searchable::withoutSyncingToSearch(function () use ($jsonlPath, $userId, $now, &$imported) {
+            $this->doImport($jsonlPath, $userId, $now, $imported);
+        });
+
+        $this->info("✅ Imported {$imported} listings.");
+        return 0;
+    }
+
+    private function doImport(string $jsonlPath, int $userId, \Illuminate\Support\Carbon $now, int &$imported): void
+    {
         foreach (file($jsonlPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
             $item = json_decode($line, true);
             if (!$item) continue;
@@ -111,9 +122,6 @@ class OnlinerImportCommand extends Command
 
             $imported++;
         }
-
-        $this->info("✅ Imported {$imported} listings.");
-        return 0;
     }
 
     private function classifyType(string $title, string $desc): string
