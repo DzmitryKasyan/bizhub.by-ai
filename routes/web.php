@@ -32,6 +32,7 @@ Route::get('/sell-business', [ListingController::class, 'sellBusiness'])->name('
 Route::get('/buy-business', [ListingController::class, 'buyBusiness'])->name('buy-business');
 Route::get('/investments', [ListingController::class, 'investments'])->name('investments');
 Route::get('/franchises', [ListingController::class, 'franchises'])->name('franchises');
+Route::get('/trust-management', [ListingController::class, 'trustManagement'])->name('trust-management');
 
 // Blog
 Route::prefix('blog')->name('blog.')->group(function () {

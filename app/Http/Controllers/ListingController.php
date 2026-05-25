@@ -260,6 +260,11 @@ class ListingController extends Controller
         return $this->index($request->merge(['type' => ListingType::Franchise->value]));
     }
 
+    public function trustManagement(Request $request): View
+    {
+        return $this->index($request->merge(['type' => ListingType::TrustManagement->value]));
+    }
+
     private function saveImages(Request $request, Listing $listing): void
     {
         if (!$request->hasFile('images')) {

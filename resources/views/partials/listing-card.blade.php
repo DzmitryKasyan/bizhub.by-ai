@@ -8,6 +8,7 @@ $typeLabels = $typeLabels ?? [
     'partnership'      => 'Поиск партнёра',
     'real_estate'      => 'Недвижимость',
     'equipment'        => 'Оборудование',
+    'trust_management' => 'Доверительное управление',
 ];
 
 $typeBadgeColors = $typeBadgeColors ?? [
@@ -19,6 +20,7 @@ $typeBadgeColors = $typeBadgeColors ?? [
     'partnership'      => 'bg-amber-100 text-amber-700',
     'real_estate'      => 'bg-indigo-100 text-indigo-700',
     'equipment'        => 'bg-slate-100 text-slate-700',
+    'trust_management' => 'bg-cyan-100 text-cyan-700',
 ];
 
 $badgeClass = $typeBadgeColors[$listing->type->value] ?? 'bg-slate-100 text-slate-700';

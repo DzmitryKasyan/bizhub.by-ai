@@ -14,6 +14,7 @@ $typeLabels = [
     'partnership'      => 'Поиск партнёра',
     'real_estate'      => 'Недвижимость',
     'equipment'        => 'Оборудование',
+    'trust_management' => 'Доверительное управление',
 ];
 
 $statusConfig = [

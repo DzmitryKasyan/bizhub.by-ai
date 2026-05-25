@@ -14,6 +14,7 @@ enum ListingType: string
     case Partnership = 'partnership';
     case RealEstate = 'real_estate';
     case Equipment = 'equipment';
+    case TrustManagement = 'trust_management';
 
     public function label(): string
     {
@@ -26,6 +27,7 @@ enum ListingType: string
             self::Partnership => 'Партнёрство',
             self::RealEstate => 'Коммерческая недвижимость',
             self::Equipment => 'Оборудование',
+            self::TrustManagement => 'Доверительное управление',
         };
     }
 
@@ -40,6 +42,7 @@ enum ListingType: string
             self::Partnership => 'heroicon-o-user-group',
             self::RealEstate => 'heroicon-o-home',
             self::Equipment => 'heroicon-o-wrench-screwdriver',
+            self::TrustManagement => 'heroicon-o-hand-raised',
         };
     }
 
