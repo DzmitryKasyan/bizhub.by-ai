@@ -8,6 +8,7 @@ $typeLabels = [
     'partnership'      => 'Поиск партнёра',
     'real_estate'      => 'Недвижимость',
     'equipment'        => 'Оборудование',
+    'trust_management' => 'Доверительное управление',
 ];
 
 $typeBadgeColors = [
@@ -19,6 +20,7 @@ $typeBadgeColors = [
     'partnership'      => 'bg-yellow-100 text-yellow-700',
     'real_estate'      => 'bg-indigo-100 text-indigo-700',
     'equipment'        => 'bg-slate-100 text-slate-700',
+    'trust_management' => 'bg-cyan-100 text-cyan-700',
 ];
 
 $currentType = request('type');
@@ -45,6 +47,14 @@ $metaDesc = $currentType
                 Найдено {{ $listings->total() }} {{ trans_choice('объявление|объявления|объявлений', $listings->total()) }}
             @endif
         </p>
+        @if($currentType === 'trust_management')
+            <a href="{{ route('article.show', 'trust-management') }}" class="inline-flex items-center gap-1.5 mt-2 text-xs text-primary-600 hover:text-primary-700 font-medium">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Что такое доверительное управление?
+            </a>
+        @endif
     </div>
 
     <div class="flex flex-col lg:flex-row gap-6" x-data="{ filtersOpen: false }">
