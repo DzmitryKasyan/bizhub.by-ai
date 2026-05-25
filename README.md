@@ -50,8 +50,26 @@ http://bizhub/
 |---|---|
 | `php artisan onliner:parse` | Спарсить объявления с onliner.by в JSONL |
 | `php artisan onliner:import` | Импорт из JSONL в БД |
+| `php artisan exchange:update` | Обновить кеш курсов валют (НБРБ + CoinGecko) |
 | `php artisan optimize:clear` | Сброс всех кэшей |
 | `php artisan migrate:fresh --seed` | Пересоздать БД с тестовыми данными |
+
+## Cron
+
+Для периодических задач (курсы валют, очистка старых токенов и т.д.) Laravel использует встроенный планировщик.
+
+**Автоматически (рекомендуется):**
+```bash
+bash install-cron.sh
+```
+
+**Вручную — добавить в crontab:**
+```cron
+* * * * * cd /path/to/bizhub && docker compose exec -T app php artisan schedule:run >> storage/logs/cron.log 2>&1
+```
+
+Это запускает планировщик каждую минуту. Сами задачи описаны в `routes/console.php`:
+- `exchange:update` — каждый час (обновление курсов валют)
 
 ## Структура
 

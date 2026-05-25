@@ -15,7 +15,7 @@ class HomeController extends Controller
 {
     public function index(ExchangeRateService $rates): View
     {
-        $exchangeRates = $rates->getRates();
+        $exchangeRates = $rates->getRatesFlat();
 
         $featuredListings = Listing::query()
             ->active()
@@ -49,5 +49,16 @@ class HomeController extends Controller
         ];
 
         return view('home', compact('featuredListings', 'recentListings', 'categories', 'stats', 'exchangeRates'));
+    }
+
+    public function rates(ExchangeRateService $rates): View
+    {
+        $data = $rates->getRates();
+
+        return view('rates', [
+            'rates' => $data['rates'],
+            'updatedAt' => $data['updated_at'],
+            'labels' => $rates->labels(),
+        ]);
     }
 }
