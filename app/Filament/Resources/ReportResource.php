@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ReportResource\Pages\ListReports;
+use App\Filament\Resources\ReportResource\Pages\ViewReport;
 use App\Models\Report;
 use Filament\Resources\Resource;
 use Filament\Actions\DeleteAction;
+use Filament\Actions\ViewAction;
 use Filament\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -42,6 +44,16 @@ class ReportResource extends Resource
         return auth()->user()?->isAdmin() ?? false;
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getModel()::where('status', 'pending')->count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'danger';
+    }
+
     public static function table(Table $table): Table
     {
         return $table
@@ -66,7 +78,13 @@ class ReportResource extends Resource
                 TextColumn::make('reason')
                     ->label('Причина')
                     ->searchable()
-                    ->limit(50),
+                    ->limit(50)
+                    ->toggleable(),
+
+                TextColumn::make('description')
+                    ->label('Описание')
+                    ->limit(100)
+                    ->toggleable(),
 
                 TextColumn::make('status')
                     ->label('Статус')
@@ -103,6 +121,8 @@ class ReportResource extends Resource
                     ]),
             ])
             ->actions([
+                ViewAction::make(),
+
                 Action::make('resolve')
                     ->label('Решено')
                     ->icon('heroicon-o-check')
@@ -145,6 +165,7 @@ class ReportResource extends Resource
     {
         return [
             'index' => ListReports::route('/'),
+            'view' => ViewReport::route('/{record}'),
         ];
     }
 }

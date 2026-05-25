@@ -53,6 +53,7 @@ http://bizhub/
 | `php artisan exchange:update` | Обновить кеш курсов валют (НБРБ + CoinGecko) |
 | `php artisan optimize:clear` | Сброс всех кэшей |
 | `php artisan migrate:fresh --seed` | Пересоздать БД с тестовыми данными |
+| `php artisan onliner:import` | Импорт объявлений из JSONL (после migrate:fresh) |
 
 ## Cron
 
