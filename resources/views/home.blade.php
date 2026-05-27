@@ -32,7 +32,7 @@ $typeBadgeColors = [
 @endphp
 
 <!-- Hero Section -->
-<section class="relative overflow-hidden bg-slate-900 text-white">
+<section class="relative overflow-x-hidden bg-slate-900 text-white">
     <!-- Background effects -->
     <div class="absolute inset-0 hero-grid opacity-50"></div>
     <div class="glow-orb w-96 h-96 bg-primary-500 top-0 left-1/4 animate-float"></div>
@@ -106,7 +106,7 @@ $typeBadgeColors = [
 
     <!-- Bottom wave -->
     <div class="absolute bottom-0 left-0 right-0">
-        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg class="block" viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 85C1200 90 1320 90 1380 90L1440 90V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="#f8fafc"/>
         </svg>
     </div>
@@ -114,7 +114,7 @@ $typeBadgeColors = [
 
 <!-- Exchange Rates Bar -->
 @if(!empty($exchangeRates))
-<section class="relative z-10">
+<section class="relative z-10 py-10">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <a href="{{ route('rates') }}" class="block bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-100 shadow-sm px-6 py-3 hover:shadow-md hover:border-primary-200 transition-all group">
             <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
