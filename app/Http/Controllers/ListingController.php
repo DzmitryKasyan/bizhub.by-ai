@@ -11,9 +11,14 @@ use App\Models\Category;
 use App\Models\Listing;
 use App\Models\ListingImage;
 use App\Models\Location;
+use App\Rules\ValidImageContent;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class ListingController extends Controller
 {
@@ -141,7 +146,7 @@ class ListingController extends Controller
             'employees_count'   => 'nullable|integer|min:0',
             'ownership_type'    => 'nullable|in:' . implode(',', \App\Enums\OwnershipType::values()),
             'sale_reason'       => 'nullable|string|max:255',
-            'images.*'          => 'nullable|image|mimes:jpeg,png,webp|max:5120',
+            'images.*'          => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:5120', new ValidImageContent],
         ]);
 
         $validated['status'] = $request->input('action') === 'publish'
@@ -194,7 +199,7 @@ class ListingController extends Controller
             'employees_count'   => 'nullable|integer|min:0',
             'ownership_type'    => 'nullable|in:' . implode(',', \App\Enums\OwnershipType::values()),
             'sale_reason'       => 'nullable|string|max:255',
-            'images.*'          => 'nullable|image|mimes:jpeg,png,webp|max:5120',
+            'images.*'          => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:5120', new ValidImageContent],
         ]);
 
         $listing->update($validated);
@@ -272,9 +277,22 @@ class ListingController extends Controller
         }
 
         $existingCount = $listing->images()->count();
+        $manager = new ImageManager(new Driver());
 
         foreach ($request->file('images') as $i => $file) {
-            $path = $file->store('listings', 'public');
+            $ext = strtolower($file->getClientOriginalExtension());
+
+            if ($ext === 'svg') {
+                $filename = Str::uuid() . '.svg';
+                $path = 'listings/' . $filename;
+                Storage::disk('public')->put($path, file_get_contents($file->getPathname()));
+            } else {
+                $image = $manager->read($file->getPathname());
+                $filename = Str::uuid() . '.webp';
+                $path = 'listings/' . $filename;
+                Storage::disk('public')->put($path, $image->toWebp(80));
+            }
+
             $listing->images()->create([
                 'path'       => $path,
                 'is_main'    => $existingCount === 0 && $i === 0,
