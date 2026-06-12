@@ -75,7 +75,7 @@ class ConversationController extends Controller
         ]);
 
         $conversation->update(['last_message_at' => now()]);
-        $listing->increment('responses_count');
+        $listing->increment('responses_count', 1, [], false);
 
         return redirect()->route('messages.show', $conversation)
             ->with('success', 'Сообщение отправлено.');

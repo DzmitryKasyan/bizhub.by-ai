@@ -250,7 +250,7 @@ class Listing extends Model implements HasMedia
 
     public function incrementViews(): void
     {
-        $this->increment('views_count');
+        $this->increment('views_count', 1, [], false);
     }
 
     public function getMainImageAttribute(): ?string

@@ -28,11 +28,11 @@ class FavoriteController extends Controller
 
         if ($exists) {
             $user->favorites()->where('listing_id', $listing->id)->delete();
-            $listing->decrement('favorites_count');
+            $listing->decrement('favorites_count', 1, [], false);
             $favorited = false;
         } else {
             $user->favorites()->create(['listing_id' => $listing->id]);
-            $listing->increment('favorites_count');
+            $listing->increment('favorites_count', 1, [], false);
             $favorited = true;
         }
 
