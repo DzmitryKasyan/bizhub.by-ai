@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\ReportResource\Pages;
 
+use App\Filament\Resources\ListingResource;
 use App\Filament\Resources\ReportResource;
+use App\Models\Listing;
+use App\Models\Report;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Model;
 
 class ViewReport extends ViewRecord
 {
@@ -24,11 +28,33 @@ class ViewReport extends ViewRecord
                             ->label('ID'),
                         TextEntry::make('reporter.name')
                             ->label('Жалобщик'),
-                        TextEntry::make('reportable_type')
-                            ->label('Тип объекта')
-                            ->formatStateUsing(fn (string $state): string => class_basename($state)),
-                        TextEntry::make('reportable_id')
-                            ->label('ID объекта'),
+                        TextEntry::make('reportable')
+                            ->label('Объект')
+                            ->formatStateUsing(function (Report $record, $state): string {
+                                $object = $state instanceof Model ? $state : $record->reportable;
+
+                                if (! $object) {
+                                    return 'Удалён (#' . $record->reportable_id . ')';
+                                }
+
+                                $type = $object instanceof Listing
+                                    ? 'Объявление'
+                                    : class_basename($object);
+
+                                $title = $object instanceof Listing
+                                    ? $object->title
+                                    : ('#' . $object->getKey());
+
+                                return $type . ': ' . $title;
+                            })
+                            ->url(function (Report $record): ?string {
+                                if ($record->reportable instanceof Listing) {
+                                    return ListingResource::getUrl('view', ['record' => $record->reportable]);
+                                }
+
+                                return null;
+                            })
+                            ->openUrlInNewTab(),
                         TextEntry::make('reason')
                             ->label('Причина')
                             ->formatStateUsing(fn (string $state): string => match ($state) {

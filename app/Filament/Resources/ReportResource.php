@@ -6,8 +6,10 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ReportResource\Pages\ListReports;
 use App\Filament\Resources\ReportResource\Pages\ViewReport;
+use App\Models\Listing;
 use App\Models\Report;
 use Filament\Resources\Resource;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Actions\Action;
@@ -66,14 +68,34 @@ class ReportResource extends Resource
                     ->label('Жалобщик')
                     ->searchable(),
 
-                TextColumn::make('reportable_type')
-                    ->label('Тип объекта')
-                    ->formatStateUsing(
-                        fn (string $state): string => class_basename($state)
-                    ),
+                TextColumn::make('reportable')
+                    ->label('Объект')
+                    ->formatStateUsing(function (Report $record, $state): string {
+                        $object = $state instanceof Model ? $state : $record->reportable;
 
-                TextColumn::make('reportable_id')
-                    ->label('ID объекта'),
+                        if (! $object) {
+                            return 'Удалён (#' . $record->reportable_id . ')';
+                        }
+
+                        $type = $object instanceof Listing
+                            ? 'Объявление'
+                            : class_basename($object);
+
+                        $title = $object instanceof Listing
+                            ? $object->title
+                            : ('#' . $object->getKey());
+
+                        return $type . ': ' . $title;
+                    })
+                    ->url(function (Report $record): ?string {
+                        if ($record->reportable instanceof Listing) {
+                            return ListingResource::getUrl('view', ['record' => $record->reportable]);
+                        }
+
+                        return null;
+                    })
+                    ->openUrlInNewTab()
+                    ->limit(50),
 
                 TextColumn::make('reason')
                     ->label('Причина')
