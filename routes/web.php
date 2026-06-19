@@ -28,6 +28,7 @@ Route::get('/sitemap.xml', [SitemapController::class, 'index']);
 // Listings catalog
 Route::prefix('listings')->name('listings.')->group(function () {
     Route::get('/', [ListingController::class, 'index'])->name('index');
+    Route::get('/map', [ListingController::class, 'map'])->name('map');
     Route::get('/{listing:slug}', [ListingController::class, 'show'])->name('show');
 });
 

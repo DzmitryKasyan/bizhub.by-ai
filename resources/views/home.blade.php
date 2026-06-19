@@ -43,7 +43,7 @@ $typeBadgeColors = [
         <div class="max-w-3xl mx-auto text-center relative z-10">
             <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm font-medium text-primary-200 mb-8">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                Более 1000 актуальных предложений
+                {{ number_format($stats['total_listings'] ?? 0, 0, '.', ' ') }} актуальных предложений
             </div>
 
             <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight mb-6 tracking-tight">

@@ -100,6 +100,22 @@ class OnlinerImportCommand extends Command
                 'updated_at'    => $now,
             ]);
 
+            // Save contacts
+            if (!empty($item['phone'])) {
+                $listing->contacts()->create([
+                    'type'       => 'phone',
+                    'value'      => $item['phone'],
+                    'is_public'  => true,
+                ]);
+            }
+            if (!empty($item['telegram'])) {
+                $listing->contacts()->create([
+                    'type'       => 'telegram',
+                    'value'      => $item['telegram'],
+                    'is_public'  => true,
+                ]);
+            }
+
             // Download and attach image
             if (!empty($item['image_url'])) {
                 try {
