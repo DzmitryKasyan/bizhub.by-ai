@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Resources\Articles\Tables;
 
 use Filament\Actions\BulkActionGroup;
@@ -7,6 +9,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class ArticlesTable
@@ -17,6 +20,10 @@ class ArticlesTable
             ->columns([
                 TextColumn::make('title')
                     ->label('Заголовок')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('articleCategory.name')
+                    ->label('Категория')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('slug')
@@ -31,7 +38,13 @@ class ArticlesTable
                     ->dateTime('d.m.Y H:i')
                     ->sortable(),
             ])
-            ->filters([])
+            ->filters([
+                SelectFilter::make('article_category_id')
+                    ->label('Категория')
+                    ->relationship('articleCategory', 'name')
+                    ->searchable()
+                    ->preload(),
+            ])
             ->recordActions([
                 EditAction::make(),
             ])
