@@ -10,6 +10,9 @@ use App\Models\ListingImage;
 use App\Models\Location;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 use Laravel\Scout\Searchable;
 
 class OnlinerImportCommand extends Command
@@ -119,16 +122,30 @@ class OnlinerImportCommand extends Command
                 ]);
             }
 
-            // Download and attach image
+            // Download and attach image safely: re-encode to WebP with UUID filename
             if (!empty($item['image_url'])) {
                 try {
                     $img = @file_get_contents($item['image_url'], false, stream_context_create([
-                        'http' => ['timeout' => 10, 'header' => "User-Agent: Mozilla/5.0\r\n"],
+                        'http' => [
+                            'timeout'       => 10,
+                            'header'        => "User-Agent: Mozilla/5.0\r\n",
+                            'max_redirects' => 2,
+                        ],
                     ]));
-                    if ($img && strlen($img) > 2000) {
-                        $ext = pathinfo(parse_url($item['image_url'], PHP_URL_PATH), PATHINFO_EXTENSION) ?: 'jpg';
-                        $dest = 'listings/' . $listing->id . '_0.' . $ext;
-                        Storage::disk('public')->put($dest, $img);
+
+                    if ($img && strlen($img) > 2000 && strlen($img) < 10_000_000) {
+                        $tempPath = tempnam(sys_get_temp_dir(), 'onliner_');
+                        file_put_contents($tempPath, $img);
+
+                        $manager = new ImageManager(new Driver());
+                        $image = $manager->read($tempPath);
+
+                        $filename = Str::uuid() . '.webp';
+                        $dest = 'listings/' . $filename;
+                        Storage::disk('public')->put($dest, $image->toWebp(80));
+
+                        unlink($tempPath);
+
                         ListingImage::create([
                             'listing_id' => $listing->id,
                             'path'       => $dest,
