@@ -41,17 +41,17 @@ class OnlinerParseCommand extends Command
             foreach ($items as $item) {
                 if (isset($existing[$item['topic_id']])) continue;
 
-                // Visit individual topic page for full image
+                // Visit individual topic page for full text, contacts and image
                 $topicHtml = $this->fetch(self::TOPIC_URL . '?t=' . $item['topic_id']);
-                $img = null;
                 if ($topicHtml) {
-                    $img = $this->extractImage($topicHtml);
-                    // Skip broken/missing image placeholders
-                    if ($img && preg_match('#/icon/\d+#', $img)) {
-                        $img = null;
-                    }
+                    $topicData = $this->extractTopicData($topicHtml);
+                    $item['description'] = $topicData['description'] ?: $item['description'];
+                    $item['phone'] = $topicData['phone'];
+                    $item['telegram'] = $topicData['telegram'];
+                    $item['image_url'] = $topicData['image_url'];
+                } else {
+                    $item['image_url'] = null;
                 }
-                $item['image_url'] = $img;
                 unset($item['placeholder']);
 
                 fwrite($handle, json_encode($item, JSON_UNESCAPED_UNICODE) . "\n");
@@ -102,10 +102,10 @@ class OnlinerParseCommand extends Command
             if (isset($seen[$tid])) continue;
             $seen[$tid] = true;
 
-            $title = trim(strip_tags($m[2]));
+            $title = html_entity_decode(trim(strip_tags($m[2])), ENT_QUOTES | ENT_HTML5, 'UTF-8');
             if (mb_strlen($title) < 3) continue;
 
-            $desc = trim(preg_replace('/\s+/u', ' ', strip_tags($m[3])));
+            $desc = html_entity_decode(trim(preg_replace('/\s+/u', ' ', strip_tags($m[3]))), ENT_QUOTES | ENT_HTML5, 'UTF-8');
 
             // Price
             $price = null;
@@ -132,12 +132,65 @@ class OnlinerParseCommand extends Command
         return $items;
     }
 
-    private function extractImage(string $html): ?string
+    private function extractTopicData(string $html): array
     {
-        // Find first listing image (fleamarket folder), skip avatars and icons
-        if (preg_match('/<img\s+[^>]*src="(https?:\/\/content\.onliner\.by\/fleamarket\/[^"]+)"[^>]*>/iu', $html, $m)) {
-            return $m[1];
+        // Try to find the main post content
+        $contentHtml = null;
+        foreach ([
+            '/<div[^>]*class="[^"]*post-content[^"]*"[^>]*>(.*?)<\/div>/isu',
+            '/<div[^>]*class="[^"]*b-post__content[^"]*"[^>]*>(.*?)<\/div>/isu',
+            '/<div[^>]*class="[^"]*content[^"]*"[^>]*>(.*?)<\/div>/isu',
+        ] as $pattern) {
+            if (preg_match($pattern, $html, $m)) {
+                $contentHtml = $m[1];
+                break;
+            }
         }
-        return null;
+
+        if (!$contentHtml) {
+            // Fallback: extract from body, removing scripts and styles
+            $body = preg_replace('/<script[^>]*>.*?<\/script>/isu', '', $html);
+            $body = preg_replace('/<style[^>]*>.*?<\/style>/isu', '', $body);
+            if (preg_match('/<body[^>]*>(.*?)<\/body>/isu', $body, $m)) {
+                $contentHtml = $m[1];
+            } else {
+                $contentHtml = $html;
+            }
+        }
+
+        $text = trim(preg_replace('/\s+/u', ' ', strip_tags($contentHtml)));
+        $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+        // Extract phone
+        $phone = null;
+        if (preg_match('/(?:\+375|80?\s?29|33|44|25)\s?[\d\-\(\)\s]{6,13}\d/iu', $text, $pm)) {
+            $phone = preg_replace('/\s+/u', ' ', trim($pm[0]));
+        }
+
+        // Extract telegram
+        $telegram = null;
+        if (preg_match('/(?:telegram|телеграм|tg|тг)[^\w]*@([a-zA-Z0-9_]{5,32})/iu', $text, $tm)) {
+            $telegram = '@' . $tm[1];
+        } elseif (preg_match('/(?:https?:\/\/)?t\.me\/([a-zA-Z0-9_]{5,32})/iu', $text, $tm)) {
+            $telegram = '@' . $tm[1];
+        } elseif (preg_match('/(?<![a-zA-Z0-9_])@([a-zA-Z0-9_]{5,32})/u', $text, $tm)) {
+            $telegram = '@' . $tm[1];
+        }
+
+        // Find first listing image (fleamarket folder), skip avatars and icons
+        $imageUrl = null;
+        if (preg_match('/<img\s+[^>]*src="(https?:\/\/content\.onliner\.by\/fleamarket\/[^"]+)"[^>]*>/iu', $html, $m)) {
+            $imageUrl = $m[1];
+        }
+        if ($imageUrl && preg_match('#/icon/\d+#', $imageUrl)) {
+            $imageUrl = null;
+        }
+
+        return [
+            'description' => mb_substr($text, 0, 5000),
+            'phone'       => $phone,
+            'telegram'    => $telegram,
+            'image_url'   => $imageUrl,
+        ];
     }
 }

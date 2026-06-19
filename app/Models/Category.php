@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,6 +14,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class Category extends Model
 {
+    use HasFactory;
     use HasSlug;
 
     protected $fillable = [
@@ -22,6 +24,7 @@ class Category extends Model
         'icon',
         'sort_order',
         'is_active',
+        'listings_count',
     ];
 
     protected function casts(): array

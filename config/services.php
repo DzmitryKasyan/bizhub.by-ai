@@ -38,4 +38,8 @@ return [
     'google_analytics_id' => env('GOOGLE_ANALYTICS_ID'),
     'yandex_metrika_id'   => env('YANDEX_METRIKA_ID'),
 
+    'yandex' => [
+        'maps_api_key' => env('YANDEX_MAPS_API_KEY'),
+    ],
+
 ];

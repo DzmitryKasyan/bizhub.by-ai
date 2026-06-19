@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Enums\ListingStatus;
 use App\Enums\ListingType;
 use App\Models\Category;
 use App\Models\Listing;
+use App\Models\ListingTypeModel;
 use App\Services\ExchangeRateService;
 use Illuminate\View\View;
 
@@ -38,14 +38,21 @@ class HomeController extends Controller
             ->active()
             ->root()
             ->ordered()
-            ->withCount(['listings' => fn ($q) => $q->where('status', ListingStatus::Active->value)])
             ->get();
+
+        $typeCounts = ListingTypeModel::query()
+            ->whereIn('code', [
+                ListingType::SellBusiness->value,
+                ListingType::OfferInvestment->value,
+                ListingType::Franchise->value,
+            ])
+            ->pluck('listings_count', 'code');
 
         $stats = [
             'total_listings' => Listing::active()->count(),
-            'sell_business' => Listing::active()->ofType(ListingType::SellBusiness)->count(),
-            'investors' => Listing::active()->ofType(ListingType::OfferInvestment)->count(),
-            'franchises' => Listing::active()->ofType(ListingType::Franchise)->count(),
+            'sell_business' => $typeCounts->get(ListingType::SellBusiness->value, 0),
+            'investors' => $typeCounts->get(ListingType::OfferInvestment->value, 0),
+            'franchises' => $typeCounts->get(ListingType::Franchise->value, 0),
         ];
 
         return view('home', compact('featuredListings', 'recentListings', 'categories', 'stats', 'exchangeRates'));

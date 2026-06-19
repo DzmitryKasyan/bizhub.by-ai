@@ -4,21 +4,27 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources;
 
+use App\Enums\Currency;
 use App\Enums\ListingStatus;
 use App\Enums\ListingType;
+use App\Filament\Resources\ListingResource\Pages\EditListing;
 use App\Filament\Resources\ListingResource\Pages\ListListings;
 use App\Filament\Resources\ListingResource\Pages\ViewListing;
 use App\Models\Listing;
-use Filament\Forms\Components\Textarea;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
+use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Actions\Action;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
@@ -44,6 +50,118 @@ class ListingResource extends Resource
     public static function canCreate(): bool
     {
         return false;
+    }
+
+    public static function form(Schema $schema): Schema
+    {
+        return $schema
+            ->schema([
+                Section::make('Основная информация')
+                    ->schema([
+                        TextInput::make('title')
+                            ->label('Заголовок')
+                            ->required()
+                            ->maxLength(255),
+
+                        Select::make('type')
+                            ->label('Тип')
+                            ->options(
+                                collect(ListingType::cases())
+                                    ->mapWithKeys(fn (ListingType $type): array => [
+                                        $type->value => $type->label(),
+                                    ])
+                                    ->all()
+                            )
+                            ->required(),
+
+                        Select::make('status')
+                            ->label('Статус')
+                            ->options(
+                                collect(ListingStatus::cases())
+                                    ->mapWithKeys(fn (ListingStatus $status): array => [
+                                        $status->value => $status->label(),
+                                    ])
+                                    ->all()
+                            )
+                            ->required(),
+
+                        Select::make('category_id')
+                            ->label('Категория')
+                            ->relationship('category', 'name')
+                            ->required()
+                            ->searchable()
+                            ->preload(),
+
+                        Select::make('location_id')
+                            ->label('Регион')
+                            ->relationship('location', 'name')
+                            ->searchable()
+                            ->preload(),
+                    ])
+                    ->columns(2),
+
+                Section::make('Цена')
+                    ->schema([
+                        TextInput::make('price')
+                            ->label('Цена')
+                            ->numeric()
+                            ->default(0),
+
+                        TextInput::make('price_max')
+                            ->label('Цена до')
+                            ->numeric(),
+
+                        Select::make('currency')
+                            ->label('Валюта')
+                            ->options(
+                                collect(Currency::cases())
+                                    ->mapWithKeys(fn (Currency $currency): array => [
+                                        $currency->value => $currency->label(),
+                                    ])
+                                    ->all()
+                            )
+                            ->required(),
+
+                        Toggle::make('price_negotiable')
+                            ->label('Цена договорная'),
+                    ])
+                    ->columns(4),
+
+                Section::make('Описание')
+                    ->schema([
+                        Textarea::make('description')
+                            ->label('Описание')
+                            ->required()
+                            ->rows(6)
+                            ->columnSpanFull(),
+                    ]),
+
+                Section::make('Контакты')
+                    ->schema([
+                        TextInput::make('contacts.phone')
+                            ->label('Телефон'),
+
+                        TextInput::make('contacts.telegram')
+                            ->label('Telegram'),
+                    ])
+                    ->columns(2),
+
+                Section::make('Координаты')
+                    ->schema([
+                        TextInput::make('coordinate.latitude')
+                            ->label('Широта')
+                            ->numeric(),
+
+                        TextInput::make('coordinate.longitude')
+                            ->label('Долгота')
+                            ->numeric(),
+
+                        TextInput::make('coordinate.address')
+                            ->label('Адрес на карте')
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(2),
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -150,6 +268,7 @@ class ListingResource extends Resource
             ])
             ->actions([
                 ViewAction::make(),
+                EditAction::make(),
 
                 Action::make('approve')
                     ->label('Одобрить')
@@ -325,6 +444,7 @@ class ListingResource extends Resource
         return [
             'index' => ListListings::route('/'),
             'view'  => ViewListing::route('/{record}'),
+            'edit'  => EditListing::route('/{record}/edit'),
         ];
     }
 }

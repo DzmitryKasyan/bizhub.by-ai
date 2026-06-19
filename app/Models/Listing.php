@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
@@ -191,6 +192,16 @@ class Listing extends Model implements HasMedia
         return $this->hasMany(Promotion::class);
     }
 
+    public function contacts(): MorphMany
+    {
+        return $this->morphMany(Contact::class, 'contactable');
+    }
+
+    public function coordinate(): HasOne
+    {
+        return $this->hasOne(ListingCoordinate::class);
+    }
+
     // ─── Scopes ───────────────────────────────────────────────────
 
     public function scopeActive(Builder $query): Builder
@@ -287,5 +298,35 @@ class Listing extends Model implements HasMedia
         }
 
         return "{$price} {$symbol}";
+    }
+
+    public function saveContactsAndCoordinate(array $data): void
+    {
+        $contacts = $data['contacts'] ?? [];
+        foreach (['phone', 'telegram'] as $type) {
+            $value = $contacts[$type] ?? null;
+            if ($value) {
+                $this->contacts()->updateOrCreate(
+                    ['type' => $type],
+                    ['value' => $value, 'is_public' => true]
+                );
+            } else {
+                $this->contacts()->where('type', $type)->delete();
+            }
+        }
+
+        $coordinate = $data['coordinate'] ?? [];
+        if (($coordinate['latitude'] ?? null) && ($coordinate['longitude'] ?? null)) {
+            $this->coordinate()->updateOrCreate(
+                [],
+                [
+                    'latitude'  => $coordinate['latitude'],
+                    'longitude' => $coordinate['longitude'],
+                    'address'   => $coordinate['address'] ?? null,
+                ]
+            );
+        } else {
+            $this->coordinate()->delete();
+        }
     }
 }

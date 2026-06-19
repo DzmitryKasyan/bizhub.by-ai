@@ -171,6 +171,88 @@
                     @enderror
                 </div>
 
+                <!-- Contacts -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="contact_phone" class="block text-sm font-medium text-slate-700 mb-1.5">
+                            Телефон
+                        </label>
+                        <input type="tel"
+                               id="contact_phone"
+                               name="contacts[phone]"
+                               value="{{ old('contacts.phone', $listing->contacts->firstWhere('type', 'phone')?->value) }}"
+                               placeholder="+375 (29) 123-45-67"
+                               class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 @error('contacts.phone') border-red-400 @enderror">
+                        @error('contacts.phone')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="contact_telegram" class="block text-sm font-medium text-slate-700 mb-1.5">
+                            Telegram
+                        </label>
+                        <input type="text"
+                               id="contact_telegram"
+                               name="contacts[telegram]"
+                               value="{{ old('contacts.telegram', $listing->contacts->firstWhere('type', 'telegram')?->value) }}"
+                               placeholder="@username"
+                               class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 @error('contacts.telegram') border-red-400 @enderror">
+                        @error('contacts.telegram')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- Coordinates -->
+                <div class="space-y-4">
+                    <div>
+                        <label for="coordinate_address" class="block text-sm font-medium text-slate-700 mb-1.5">
+                            Адрес на карте
+                        </label>
+                        <input type="text"
+                               id="coordinate_address"
+                               name="coordinate[address]"
+                               value="{{ old('coordinate.address', $listing->coordinate?->address) }}"
+                               placeholder="г. Минск, пр. Независимости, 1"
+                               class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 @error('coordinate.address') border-red-400 @enderror">
+                        @error('coordinate.address')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="coordinate_latitude" class="block text-sm font-medium text-slate-700 mb-1.5">
+                                Широта
+                            </label>
+                            <input type="number"
+                                   id="coordinate_latitude"
+                                   name="coordinate[latitude]"
+                                   value="{{ old('coordinate.latitude', $listing->coordinate?->latitude) }}"
+                                   step="any"
+                                   placeholder="53.9045"
+                                   class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 @error('coordinate.latitude') border-red-400 @enderror">
+                            @error('coordinate.latitude')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
+                            <label for="coordinate_longitude" class="block text-sm font-medium text-slate-700 mb-1.5">
+                                Долгота
+                            </label>
+                            <input type="number"
+                                   id="coordinate_longitude"
+                                   name="coordinate[longitude]"
+                                   value="{{ old('coordinate.longitude', $listing->coordinate?->longitude) }}"
+                                   step="any"
+                                   placeholder="27.5615"
+                                   class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 @error('coordinate.longitude') border-red-400 @enderror">
+                            @error('coordinate.longitude')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Description -->
                 <div>
                     <label for="description" class="block text-sm font-medium text-slate-700 mb-1.5">

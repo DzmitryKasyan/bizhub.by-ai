@@ -11,3 +11,6 @@ Artisan::command('inspire', function () {
 
 // Exchange rates — refresh every hour
 Schedule::command('exchange:update')->hourly();
+
+// Recount active listings for categories and types
+Schedule::command('listings:recount-counters')->hourly();

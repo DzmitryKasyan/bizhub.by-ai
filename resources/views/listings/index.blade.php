@@ -40,9 +40,10 @@ $metaDesc = $currentType
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
     <!-- Page Header -->
-    <div class="mb-6">
-        <h1 class="text-2xl font-bold text-slate-900">{{ $pageTitle }}</h1>
-        <p class="text-slate-500 text-sm mt-1">
+    <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">{{ $pageTitle }}</h1>
+            <p class="text-slate-500 text-sm mt-1">
             @if(isset($listings))
                 Найдено {{ $listings->total() }} {{ trans_choice('объявление|объявления|объявлений', $listings->total()) }}
             @endif
@@ -69,6 +70,24 @@ $metaDesc = $currentType
             </a>
         @endif
     </div>
+
+    <div class="flex items-center gap-2">
+        <a href="{{ route('listings.map') }}" class="inline-flex items-center justify-center gap-2 border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-medium px-5 py-2.5 rounded-lg transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            На карте
+        </a>
+        <a href="{{ route('my-listings.create') }}"
+           class="inline-flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors whitespace-nowrap">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Добавить объявление
+        </a>
+    </div>
+</div>
 
     <div class="flex flex-col lg:flex-row gap-6" x-data="{ filtersOpen: false }">
 
@@ -132,8 +151,8 @@ $metaDesc = $currentType
                                 class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-300 bg-white">
                             <option value="">Вся Беларусь</option>
                             @foreach($locations as $loc)
-                                <option value="{{ $loc }}" {{ request('location') === $loc ? 'selected' : '' }}>
-                                    {{ $loc }}
+                                <option value="{{ $loc->id }}" {{ request('location') == $loc->id ? 'selected' : '' }}>
+                                    {{ $loc->name }}
                                 </option>
                             @endforeach
                         </select>
