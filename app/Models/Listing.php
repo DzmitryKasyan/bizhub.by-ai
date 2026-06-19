@@ -299,4 +299,34 @@ class Listing extends Model implements HasMedia
 
         return "{$price} {$symbol}";
     }
+
+    public function saveContactsAndCoordinate(array $data): void
+    {
+        $contacts = $data['contacts'] ?? [];
+        foreach (['phone', 'telegram'] as $type) {
+            $value = $contacts[$type] ?? null;
+            if ($value) {
+                $this->contacts()->updateOrCreate(
+                    ['type' => $type],
+                    ['value' => $value, 'is_public' => true]
+                );
+            } else {
+                $this->contacts()->where('type', $type)->delete();
+            }
+        }
+
+        $coordinate = $data['coordinate'] ?? [];
+        if (($coordinate['latitude'] ?? null) && ($coordinate['longitude'] ?? null)) {
+            $this->coordinate()->updateOrCreate(
+                [],
+                [
+                    'latitude'  => $coordinate['latitude'],
+                    'longitude' => $coordinate['longitude'],
+                    'address'   => $coordinate['address'] ?? null,
+                ]
+            );
+        } else {
+            $this->coordinate()->delete();
+        }
+    }
 }

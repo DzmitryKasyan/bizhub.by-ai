@@ -237,7 +237,7 @@ class ListingController extends Controller
 
         $listing = auth()->user()->listings()->create($listingData);
 
-        $this->saveContactsAndCoordinate($listing, $validated);
+        $listing->saveContactsAndCoordinate($validated);
         $this->saveImages($request, $listing);
 
         return redirect()->route('my-listings.edit', $listing)
@@ -297,7 +297,7 @@ class ListingController extends Controller
 
         $listing->update($listingData);
 
-        $this->saveContactsAndCoordinate($listing, $validated);
+        $listing->saveContactsAndCoordinate($validated);
         $this->saveImages($request, $listing);
 
         return redirect()->route('my-listings.edit', $listing)
@@ -362,36 +362,6 @@ class ListingController extends Controller
     public function trustManagement(Request $request): View
     {
         return $this->index($request->merge(['type' => ListingType::TrustManagement->value]));
-    }
-
-    private function saveContactsAndCoordinate(Listing $listing, array $data): void
-    {
-        $contacts = $data['contacts'] ?? [];
-        foreach (['phone', 'telegram'] as $type) {
-            $value = $contacts[$type] ?? null;
-            if ($value) {
-                $listing->contacts()->updateOrCreate(
-                    ['type' => $type],
-                    ['value' => $value, 'is_public' => true]
-                );
-            } else {
-                $listing->contacts()->where('type', $type)->delete();
-            }
-        }
-
-        $coordinate = $data['coordinate'] ?? [];
-        if (($coordinate['latitude'] ?? null) && ($coordinate['longitude'] ?? null)) {
-            $listing->coordinate()->updateOrCreate(
-                [],
-                [
-                    'latitude'  => $coordinate['latitude'],
-                    'longitude' => $coordinate['longitude'],
-                    'address'   => $coordinate['address'] ?? null,
-                ]
-            );
-        } else {
-            $listing->coordinate()->delete();
-        }
     }
 
     private function saveImages(Request $request, Listing $listing): void
