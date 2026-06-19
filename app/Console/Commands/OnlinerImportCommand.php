@@ -72,13 +72,16 @@ class OnlinerImportCommand extends Command
             $item = json_decode($line, true);
             if (!$item) continue;
 
+            $title = html_entity_decode($item['title'] ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            $description = html_entity_decode($item['description'] ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
             // Skip existing
-            if (Listing::where('title', $item['title'])->exists()) {
+            if (Listing::where('title', $title)->exists()) {
                 continue;
             }
 
-            $type = $this->classifyType($item['title'], $item['description']);
-            $categoryId = $this->classifyCategory($item['title'], $item['description']);
+            $type = $this->classifyType($title, $description);
+            $categoryId = $this->classifyCategory($title, $description);
 
             $locationId = $this->locationMap[$item['location']] ?? 2;
             $price = $item['price'] ?? 0;
@@ -88,8 +91,8 @@ class OnlinerImportCommand extends Command
                 'user_id'       => $userId,
                 'type'          => $type,
                 'category_id'   => $categoryId,
-                'title'         => $item['title'],
-                'description'   => $item['description'] ?: $item['title'],
+                'title'         => $title,
+                'description'   => $description ?: $title,
                 'price'         => $price,
                 'currency'      => 'BYN',
                 'location_id'   => $locationId,
