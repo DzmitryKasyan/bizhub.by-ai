@@ -4,30 +4,52 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 class Article extends Model
 {
-    protected $fillable = ['title', 'slug', 'content', 'meta_description', 'is_published'];
-    protected $casts = ['is_published' => 'boolean'];
+    use HasSlug;
 
-    public function scopePublished($query)
+    protected $fillable = [
+        'title',
+        'slug',
+        'article_category_id',
+        'content',
+        'meta_description',
+        'is_published',
+    ];
+
+    public function scopePublished(Builder $query): Builder
     {
         return $query->where('is_published', true);
     }
 
-    protected static function booted(): void
+    public function getSlugOptions(): SlugOptions
     {
-        static::creating(function (Article $article) {
-            if (empty($article->slug)) {
-                $article->slug = Str::slug($article->title);
-            }
-        });
+        return SlugOptions::create()
+            ->generateSlugsFrom('title')
+            ->saveSlugsTo('slug')
+            ->preventOverwrite();
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'is_published' => 'boolean',
+        ];
     }
 
     public function getRouteKeyName(): string
     {
         return 'slug';
+    }
+
+    public function articleCategory(): BelongsTo
+    {
+        return $this->belongsTo(ArticleCategory::class);
     }
 }

@@ -360,13 +360,41 @@ $images = array_unique(array_filter($listing->images_array));
                         </form>
                     </div>
 
-                    <button
-                       class="w-full flex items-center justify-center gap-2 border border-slate-200 hover:border-slate-300 text-slate-700 font-medium px-6 py-3 rounded-xl transition-colors">
-                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                        </svg>
-                        В избранное
-                    </button>
+                    @php
+                        $isFavorited = auth()->user()->favoritedListings()->where('listings.id', $listing->id)->exists();
+                        $favoriteUrl = route('api.listings.favorite', $listing);
+                    @endphp
+
+                    <div x-data="{ favorited: {{ $isFavorited ? 'true' : 'false' }}, loading: false }">
+                        <button type="button"
+                                data-favorite-url="{{ $favoriteUrl }}"
+                                :disabled="loading"
+                                @click="loading = true; fetch('{{ $favoriteUrl }}', {
+                                    method: 'POST',
+                                    headers: {
+                                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').getAttribute('content'),
+                                        'Accept': 'application/json',
+                                        'X-Requested-With': 'XMLHttpRequest'
+                                    }
+                                })
+                                .then(r => { if (!r.ok) throw new Error('Network error'); return r.json(); })
+                                .then(data => { favorited = data.favorited; })
+                                .catch(() => { alert('Не удалось обновить избранное. Попробуйте позже.'); })
+                                .finally(() => { loading = false; })"
+                                :class="favorited
+                                    ? 'border-red-200 text-red-600 bg-red-50 hover:bg-red-100'
+                                    : 'border-slate-200 text-slate-700 hover:border-slate-300 bg-white'"
+                                class="w-full flex items-center justify-center gap-2 border font-medium px-6 py-3 rounded-xl transition-colors">
+                            <svg class="w-5 h-5"
+                                 :class="favorited ? 'text-red-500' : 'text-slate-400'"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                            </svg>
+                            <span x-text="favorited ? 'В избранном' : 'В избранное'"></span>
+                        </button>
+                    </div>
 
                     <!-- Report button -->
                     <div x-data="{ reportOpen: false }" class="mt-2">
