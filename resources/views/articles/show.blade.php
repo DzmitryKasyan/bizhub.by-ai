@@ -15,6 +15,8 @@
     <nav class="flex items-center gap-2 text-sm text-slate-400 mb-8">
         <a href="{{ route('home') }}" class="hover:text-primary-600 transition-colors">Главная</a>
         <span>/</span>
+        <a href="{{ route('articles.index') }}" class="hover:text-primary-600 transition-colors">Блог</a>
+        <span>/</span>
         <span class="text-slate-600">{{ $article->title }}</span>
     </nav>
 
