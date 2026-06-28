@@ -2,6 +2,11 @@
 
 @section('title', $article->title)
 @section('meta_description', $article->meta_description ?? Str::limit(strip_tags($article->content), 160))
+@section('canonical', route('article.show', $article->slug))
+@section('og_type', 'article')
+@section('og_url', route('article.show', $article->slug))
+@section('og_title', $article->title)
+@section('og_description', $article->meta_description ?? Str::limit(strip_tags($article->content), 160))
 
 @section('content')
 

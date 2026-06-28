@@ -35,6 +35,14 @@ $metaDesc = $currentType
 @section('title', $pageTitle)
 @section('meta_description', $metaDesc)
 
+@php
+$hasSeoFilters = request()->hasAny(['type', 'category', 'location', 'price_min', 'price_max', 'currency', 'search']);
+$currentPage = request()->integer('page', 1);
+@endphp
+
+@section('canonical', route('listings.index'))
+@section('meta_robots', $hasSeoFilters || $currentPage > 1 ? 'noindex, follow' : 'index, follow')
+
 @section('content')
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -282,6 +290,7 @@ $metaDesc = $currentType
                             @if($listing->main_image)
                                 <img src="{{ asset('storage/' . $listing->main_image) }}"
                                      alt="{{ $listing->title }}"
+                                     loading="lazy"
                                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                             @else
                                 <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">

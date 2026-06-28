@@ -5,11 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="@yield('meta_description', 'BizHub.by — платформа для покупки и продажи бизнеса в Беларуси. Актуальные объявления, инвестиции, франшизы.')">
     <meta name="keywords" content="@yield('meta_keywords', 'купить бизнес, продать бизнес, инвестиции, франшиза, Беларусь')">
+    <meta name="robots" content="@yield('meta_robots', 'index, follow')">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="canonical" href="@yield('canonical', request()->url())">
 
     <title>@yield('title', 'BizHub.by') — Платформа для покупки и продажи бизнеса в Беларуси</title>
+
+    <!-- Open Graph -->
+    <meta property="og:site_name" content="BizHub.by">
+    <meta property="og:locale" content="ru_RU">
+    <meta property="og:type" content="@yield('og_type', 'website')">
+    <meta property="og:url" content="@yield('og_url', request()->url())">
+    <meta property="og:title" content="@yield('og_title', View::getSection('title', 'BizHub.by'))">
+    <meta property="og:description" content="@yield('og_description', View::getSection('meta_description', 'BizHub.by — платформа для покупки и продажи бизнеса в Беларуси.'))">
+    <meta property="og:image" content="@yield('og_image', asset('favicon.svg'))">
+
+    @stack('schema_org')
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -130,6 +143,10 @@
                        class="text-slate-600 hover:text-primary-600 font-medium transition-colors text-sm px-3 py-2 rounded-lg hover:bg-primary-50/50 {{ request()->routeIs('franchises') ? 'text-primary-600 bg-primary-50/50' : '' }}">
                         Франшизы
                     </a>
+                    <a href="{{ route('articles.index') }}"
+                       class="text-slate-600 hover:text-primary-600 font-medium transition-colors text-sm px-3 py-2 rounded-lg hover:bg-primary-50/50 {{ request()->routeIs('articles.index') || request()->routeIs('article.show') ? 'text-primary-600 bg-primary-50/50' : '' }}">
+                        Блог
+                    </a>
                 </div>
 
                 <!-- Auth Buttons -->
@@ -208,6 +225,7 @@
                 <a href="{{ route('sell-business') }}" class="block px-4 py-2 text-slate-700 hover:bg-slate-50 hover:text-primary-600 rounded-lg font-medium text-sm">Продать бизнес</a>
                 <a href="{{ route('investments') }}" class="block px-4 py-2 text-slate-700 hover:bg-slate-50 hover:text-primary-600 rounded-lg font-medium text-sm">Инвестиции</a>
                 <a href="{{ route('franchises') }}" class="block px-4 py-2 text-slate-700 hover:bg-slate-50 hover:text-primary-600 rounded-lg font-medium text-sm">Франшизы</a>
+                <a href="{{ route('articles.index') }}" class="block px-4 py-2 text-slate-700 hover:bg-slate-50 hover:text-primary-600 rounded-lg font-medium text-sm {{ request()->routeIs('articles.index') || request()->routeIs('article.show') ? 'text-primary-600 bg-primary-50/50' : '' }}">Блог</a>
                 <div class="border-t border-slate-200/50 pt-3 mt-3 flex flex-col gap-2 px-4">
                     @guest
                         <a href="{{ route('login') }}" class="block text-center py-2 text-slate-700 border border-slate-300 rounded-lg font-medium text-sm hover:bg-slate-50">Войти</a>
@@ -294,6 +312,7 @@
                         <li><a href="{{ route('sell-business') }}" class="hover:text-primary-400 transition-colors">Продажа бизнеса</a></li>
                         <li><a href="{{ route('investments') }}" class="hover:text-primary-400 transition-colors">Инвестиции</a></li>
                         <li><a href="{{ route('franchises') }}" class="hover:text-primary-400 transition-colors">Франшизы</a></li>
+                        <li><a href="{{ route('articles.index') }}" class="hover:text-primary-400 transition-colors">Блог</a></li>
                     </ul>
                 </div>
 

@@ -2,6 +2,12 @@
 
 @section('title', $listing->title)
 @section('meta_description', Str::limit(strip_tags($listing->description), 160))
+@section('canonical', route('listings.show', $listing->slug))
+@section('og_type', 'product')
+@section('og_url', route('listings.show', $listing->slug))
+@section('og_title', $listing->title)
+@section('og_description', Str::limit(strip_tags($listing->description), 160))
+@section('og_image', $listing->main_image ? asset('storage/' . $listing->main_image) : asset('favicon.svg'))
 
 @section('content')
 
@@ -86,6 +92,7 @@ $images = array_unique(array_filter($listing->images_array));
                                     class="flex-shrink-0 w-20 h-16 rounded-lg overflow-hidden border-2 transition-colors hover:border-primary-400 {{ $i === 0 ? 'border-blue-500' : 'border-transparent' }}">
                                 <img src="{{ asset('storage/' . $image) }}"
                                      alt=""
+                                     loading="lazy"
                                      class="w-full h-full object-cover">
                             </button>
                         @endforeach
@@ -457,6 +464,7 @@ $images = array_unique(array_filter($listing->images_array));
                                 @if($listing->user->avatar)
                                     <img src="{{ asset('storage/' . $listing->user->avatar) }}"
                                          alt="{{ $listing->user->name }}"
+                                         loading="lazy"
                                          class="w-full h-full object-cover rounded-full">
                                 @else
                                     <span class="text-primary-700 font-semibold text-sm">

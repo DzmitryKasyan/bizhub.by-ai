@@ -33,6 +33,7 @@ $typeLabel  = $listing->type->label();
         @if($listing->main_image)
             <img src="{{ asset('storage/' . $listing->main_image) }}"
                  alt="{{ $listing->title }}"
+                 loading="lazy"
                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
         @else
             <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">

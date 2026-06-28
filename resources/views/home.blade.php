@@ -2,6 +2,11 @@
 
 @section('title', 'Бизнес хаб')
 @section('meta_description', 'BizHub.by — найдите готовый бизнес, инвестиции или франшизу в Беларуси. Тысячи актуальных предложений.')
+@section('canonical', route('home'))
+@section('og_type', 'website')
+@section('og_url', route('home'))
+@section('og_title', 'BizHub.by — Бизнес хаб')
+@section('og_description', 'BizHub.by — найдите готовый бизнес, инвестиции или франшизу в Беларуси. Тысячи актуальных предложений.')
 
 @section('content')
 

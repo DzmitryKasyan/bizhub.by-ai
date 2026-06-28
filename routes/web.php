@@ -47,6 +47,7 @@ Route::prefix('blog')->name('blog.')->group(function () {
 
 // Static pages (about, terms, privacy, etc.)
 Route::get('/page/{page:slug}', [PageController::class, 'show'])->name('page.show');
+Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
 Route::get('/article/{article:slug}', [ArticleController::class, 'show'])->name('article.show');
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/contacts', [PageController::class, 'contacts'])->name('contacts');
