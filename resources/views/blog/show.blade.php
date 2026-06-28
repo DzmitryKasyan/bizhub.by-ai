@@ -2,6 +2,12 @@
 
 @section('title', $post->title)
 @section('meta_description', isset($post->excerpt) && $post->excerpt ? $post->excerpt : Str::limit(strip_tags($post->body ?? ''), 160))
+@section('canonical', route('blog.show', $post->slug))
+@section('og_type', 'article')
+@section('og_url', route('blog.show', $post->slug))
+@section('og_title', $post->title)
+@section('og_description', isset($post->excerpt) && $post->excerpt ? $post->excerpt : Str::limit(strip_tags($post->body ?? ''), 160))
+@section('og_image', isset($post->image) && $post->image ? asset('storage/' . $post->image) : asset('favicon.svg'))
 
 @section('content')
 
@@ -38,6 +44,7 @@
                     <div class="aspect-video overflow-hidden">
                         <img src="{{ asset('storage/' . $post->image) }}"
                              alt="{{ $post->title }}"
+                             loading="lazy"
                              class="w-full h-full object-cover">
                     </div>
                 @else

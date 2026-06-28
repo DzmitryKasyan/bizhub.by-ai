@@ -2,6 +2,11 @@
 
 @section('title', $article->title)
 @section('meta_description', $article->meta_description ?? Str::limit(strip_tags($article->content), 160))
+@section('canonical', route('article.show', $article->slug))
+@section('og_type', 'article')
+@section('og_url', route('article.show', $article->slug))
+@section('og_title', $article->title)
+@section('og_description', $article->meta_description ?? Str::limit(strip_tags($article->content), 160))
 
 @section('content')
 
@@ -9,6 +14,8 @@
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-sm text-slate-400 mb-8">
         <a href="{{ route('home') }}" class="hover:text-primary-600 transition-colors">Главная</a>
+        <span>/</span>
+        <a href="{{ route('articles.index') }}" class="hover:text-primary-600 transition-colors">Блог</a>
         <span>/</span>
         <span class="text-slate-600">{{ $article->title }}</span>
     </nav>

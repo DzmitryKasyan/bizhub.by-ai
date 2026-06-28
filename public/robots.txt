@@ -1,2 +1,13 @@
 User-agent: *
-Disallow:
+Disallow: /admin/
+Disallow: /dashboard
+Disallow: /my-listings
+Disallow: /profile
+Disallow: /messages
+Disallow: /favorites
+Disallow: /login
+Disallow: /register
+Disallow: /logout
+Disallow: /api/
+
+Sitemap: https://bizhub.by/sitemap.xml

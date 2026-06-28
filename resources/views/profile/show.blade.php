@@ -20,6 +20,7 @@
                         @if($user->avatar)
                             <img src="{{ asset('storage/' . $user->avatar) }}"
                                  alt="{{ $user->name }}"
+                                 loading="lazy"
                                  class="w-full h-full object-cover">
                         @else
                             <span class="text-primary-700 font-bold text-3xl">

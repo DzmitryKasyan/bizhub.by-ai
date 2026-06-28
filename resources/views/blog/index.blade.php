@@ -3,6 +3,14 @@
 @section('title', 'Блог')
 @section('meta_description', 'Статьи и новости о покупке, продаже бизнеса, инвестициях и франшизах в Беларуси.')
 
+@php
+$hasSeoFilters = request()->hasAny(['category', 'search']);
+$currentPage = request()->integer('page', 1);
+@endphp
+
+@section('canonical', route('blog.index'))
+@section('meta_robots', $hasSeoFilters || $currentPage > 1 ? 'noindex, follow' : 'index, follow')
+
 @section('content')
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -29,6 +37,7 @@
                                 <a href="{{ route('blog.show', $post->slug) }}" class="block overflow-hidden aspect-video">
                                     <img src="{{ asset('storage/' . $post->image) }}"
                                          alt="{{ $post->title }}"
+                                         loading="lazy"
                                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                                 </a>
                             @else
