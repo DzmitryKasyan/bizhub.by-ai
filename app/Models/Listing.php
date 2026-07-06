@@ -66,6 +66,10 @@ class Listing extends Model implements HasMedia
         'promoted_until',
         'is_highlighted',
         'is_top',
+        'price_on_request',
+        'is_representative',
+        'representative_note',
+        'address_public',
         'expires_at',
     ];
 
@@ -77,6 +81,9 @@ class Listing extends Model implements HasMedia
             'ownership_type' => OwnershipType::class,
             'status' => ListingStatus::class,
             'price_negotiable' => 'boolean',
+            'price_on_request' => 'boolean',
+            'is_representative' => 'boolean',
+            'address_public' => 'boolean',
             'is_promoted' => 'boolean',
             'is_highlighted' => 'boolean',
             'is_top' => 'boolean',
