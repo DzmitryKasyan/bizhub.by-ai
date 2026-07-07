@@ -86,6 +86,8 @@ $typeLabel  = $listing->type->label();
             </div>
         @endif
 
+        @include('partials.listing-trust-badges', ['badges' => app(\App\Services\ListingTrustBadgeService::class)->forListing($listing), 'class' => 'mb-3'])
+
         <!-- Price -->
         <div class="mb-3">
             @if($listing->price_on_request)

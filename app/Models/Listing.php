@@ -194,6 +194,16 @@ class Listing extends Model implements HasMedia
         return $this->hasMany(Conversation::class);
     }
 
+    public function verifications(): HasMany
+    {
+        return $this->hasMany(ListingVerification::class);
+    }
+
+    public function ndaSignatures(): HasMany
+    {
+        return $this->hasMany(NdaSignature::class);
+    }
+
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);

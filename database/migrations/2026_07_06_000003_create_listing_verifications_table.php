@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('listing_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('type'); // business_docs, financials, vetted
+            $table->string('type'); // phone, identity, business_docs, financials, vetted
             $table->string('status')->default('pending'); // pending, approved, rejected
             $table->foreignId('reviewed_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamp('reviewed_at')->nullable();

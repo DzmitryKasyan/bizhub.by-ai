@@ -168,6 +168,9 @@ $images = array_unique(array_filter($listing->images_array));
                         </span>
                     @endif
                 </div>
+
+                @include('partials.listing-trust-badges', ['badges' => app(\App\Services\ListingTrustBadgeService::class)->forListing($listing), 'class' => 'mb-3'])
+
                 <h1 class="text-2xl font-bold text-slate-900 mb-4">{{ $listing->title }}</h1>
 
                 <!-- Key Metrics -->

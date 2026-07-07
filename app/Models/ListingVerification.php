@@ -28,6 +28,8 @@ class ListingVerification extends Model
     protected function casts(): array
     {
         return [
+            'type' => \App\Enums\VerificationType::class,
+            'status' => \App\Enums\VerificationStatus::class,
             'reviewed_at' => 'datetime',
             'expires_at' => 'datetime',
         ];

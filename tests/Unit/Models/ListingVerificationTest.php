@@ -20,13 +20,13 @@ class ListingVerificationTest extends TestCase
         $verification = ListingVerification::create([
             'listing_id' => $listing->id,
             'user_id' => $user->id,
-            'type' => 'business_docs',
-            'status' => 'pending',
+            'type' => \App\Enums\VerificationType::BusinessDocs,
+            'status' => \App\Enums\VerificationStatus::Pending,
         ]);
 
         $this->assertDatabaseHas('listing_verifications', [
             'id' => $verification->id,
-            'type' => 'business_docs',
+            'type' => \App\Enums\VerificationType::BusinessDocs->value,
         ]);
     }
 }

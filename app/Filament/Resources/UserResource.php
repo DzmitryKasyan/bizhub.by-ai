@@ -87,6 +87,14 @@ class UserResource extends Resource
                     ->label('Верифицирован')
                     ->boolean(),
 
+                IconColumn::make('hasVerifiedPhone')
+                    ->label('Телефон подтверждён')
+                    ->boolean(),
+
+                IconColumn::make('identity_verified_at')
+                    ->label('Личность подтверждена')
+                    ->boolean(),
+
                 IconColumn::make('is_premium')
                     ->label('Премиум')
                     ->boolean(),
@@ -120,6 +128,28 @@ class UserResource extends Resource
             ])
             ->actions([
                 ViewAction::make(),
+
+                Action::make('verifyPhone')
+                    ->label('Подтвердить телефон')
+                    ->icon('heroicon-o-phone')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('Подтвердить телефон')
+                    ->action(function (User $record): void {
+                        $record->update(['phone_verified_at' => now()]);
+                    })
+                    ->visible(fn (User $record): bool => ! $record->hasVerifiedPhone()),
+
+                Action::make('verifyIdentity')
+                    ->label('Подтвердить личность (KYC-lite)')
+                    ->icon('heroicon-o-identification')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('Подтвердить личность')
+                    ->action(function (User $record): void {
+                        $record->update(['identity_verified_at' => now()]);
+                    })
+                    ->visible(fn (User $record): bool => $record->identity_verified_at === null),
 
                 Action::make('verify')
                     ->label('Верифицировать')
@@ -214,6 +244,14 @@ class UserResource extends Resource
                     ->schema([
                         IconEntry::make('is_verified')
                             ->label('Верифицирован')
+                            ->boolean(),
+
+                        IconEntry::make('phone_verified_at')
+                            ->label('Телефон подтверждён')
+                            ->boolean(),
+
+                        IconEntry::make('identity_verified_at')
+                            ->label('Личность подтверждена (KYC-lite)')
                             ->boolean(),
 
                         IconEntry::make('is_premium')
