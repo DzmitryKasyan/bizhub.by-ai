@@ -423,7 +423,7 @@ class ListingController extends Controller
 
     private function saveImages(Request $request, Listing $listing): void
     {
-        if (!$request->hasFile('images')) {
+        if (! $request->hasFile('images')) {
             return;
         }
 
@@ -431,18 +431,21 @@ class ListingController extends Controller
         $manager = new ImageManager(new Driver());
 
         foreach ($request->file('images') as $i => $file) {
-            $ext = strtolower($file->getClientOriginalExtension());
-
-            if ($ext === 'svg') {
-                $filename = Str::uuid() . '.svg';
-                $path = 'listings/' . $filename;
-                Storage::disk('public')->put($path, file_get_contents($file->getPathname()));
-            } else {
-                $image = $manager->read($file->getPathname());
-                $filename = Str::uuid() . '.webp';
-                $path = 'listings/' . $filename;
-                Storage::disk('public')->put($path, $image->toWebp(80));
+            $mime = $file->getMimeType();
+            if (! in_array($mime, ['image/jpeg', 'image/png', 'image/gif', 'image/webp'], true)) {
+                continue;
             }
+
+            $image = $manager->read($file->getPathname());
+
+            $image->resize(1920, 1920, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+
+            $filename = Str::uuid() . '.webp';
+            $path = 'listings/' . $filename;
+            Storage::disk('public')->put($path, $image->toWebp(80));
 
             $listing->images()->create([
                 'path'       => $path,
