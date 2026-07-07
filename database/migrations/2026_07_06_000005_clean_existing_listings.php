@@ -4,6 +4,7 @@ use App\Models\Listing;
 use App\Services\ProhibitedContentService;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
+use Laravel\Scout\Searchable;
 
 return new class extends Migration
 {
@@ -11,27 +12,31 @@ return new class extends Migration
     {
         $prohibited = new ProhibitedContentService();
 
-        DB::transaction(function () use ($prohibited) {
-            foreach (Listing::with('user')->cursor() as $listing) {
-                $text = $listing->title . ' ' . $listing->description;
+        Searchable::withoutSyncingToSearch(function () use ($prohibited) {
+            config(['scout.driver' => 'null']);
 
-                if ($prohibited->contains($text)) {
-                    $listing->update([
-                        'status' => 'rejected',
-                        'rejection_reason' => 'Запрещённая тематика: ' . implode(', ', $prohibited->detect($text)),
-                    ]);
-                    continue;
-                }
+            DB::transaction(function () use ($prohibited) {
+                foreach (Listing::with('user')->cursor() as $listing) {
+                    $text = $listing->title . ' ' . $listing->description;
 
-                if ($listing->price == 1 && $listing->user?->isAdmin()) {
-                    $listing->update([
-                        'price' => null,
-                        'price_on_request' => true,
-                        'is_representative' => true,
-                        'representative_note' => config('bizhub.representative_default_note'),
-                    ]);
+                    if ($prohibited->contains($text)) {
+                        $listing->update([
+                            'status' => 'rejected',
+                            'rejection_reason' => 'Запрещённая тематика: ' . implode(', ', $prohibited->detect($text)),
+                        ]);
+                        continue;
+                    }
+
+                    if ($listing->price == 1 && $listing->user?->isAdmin()) {
+                        $listing->update([
+                            'price' => null,
+                            'price_on_request' => true,
+                            'is_representative' => true,
+                            'representative_note' => config('bizhub.representative_default_note'),
+                        ]);
+                    }
                 }
-            }
+            });
         });
     }
 
