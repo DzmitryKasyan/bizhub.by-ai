@@ -25,10 +25,12 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -124,6 +126,16 @@ class ListingResource extends Resource
 
                         Toggle::make('price_negotiable')
                             ->label('Цена договорная'),
+
+                        Toggle::make('price_on_request')
+                            ->label('Цена по запросу'),
+
+                        Toggle::make('is_representative')
+                            ->label('Представитель собственника'),
+
+                        TextInput::make('representative_note')
+                            ->label('Примечание представителя')
+                            ->maxLength(255),
                     ])
                     ->columns(4),
 
@@ -206,6 +218,14 @@ class ListingResource extends Resource
                     ->numeric(decimalPlaces: 2, decimalSeparator: '.', thousandsSeparator: ' ')
                     ->suffix(fn (Listing $record): string => $record->currency ? ' ' . $record->currency->symbol() : ''),
 
+                IconColumn::make('price_on_request')
+                    ->label('По запросу')
+                    ->boolean(),
+
+                IconColumn::make('is_representative')
+                    ->label('Представитель')
+                    ->boolean(),
+
                 TextColumn::make('created_at')
                     ->label('Создано')
                     ->sortable()
@@ -232,6 +252,12 @@ class ListingResource extends Resource
                             ])
                             ->all()
                     ),
+
+                TernaryFilter::make('is_representative')
+                    ->label('Представитель собственника'),
+
+                TernaryFilter::make('price_on_request')
+                    ->label('Цена по запросу'),
 
                 Filter::make('created_at')
                     ->label('Дата создания')
@@ -319,6 +345,27 @@ class ListingResource extends Resource
                             $records
                                 ->filter(fn (Listing $r): bool => $r->status === ListingStatus::Pending)
                                 ->each(fn (Listing $r): bool => $r->update(['status' => ListingStatus::Active]));
+                        })
+                        ->deselectRecordsAfterCompletion(),
+
+                    BulkAction::make('mark_representative')
+                        ->label('Отметить как представителя')
+                        ->icon('heroicon-o-user')
+                        ->color('warning')
+                        ->action(function (Collection $records): void {
+                            $records->each(fn (Listing $r): bool => $r->update([
+                                'is_representative' => true,
+                                'representative_note' => $r->representative_note ?: config('bizhub.representative_default_note'),
+                            ]));
+                        })
+                        ->deselectRecordsAfterCompletion(),
+
+                    BulkAction::make('unmark_representative')
+                        ->label('Убрать метку представителя')
+                        ->icon('heroicon-o-user')
+                        ->color('gray')
+                        ->action(function (Collection $records): void {
+                            $records->each(fn (Listing $r): bool => $r->update(['is_representative' => false]));
                         })
                         ->deselectRecordsAfterCompletion(),
 
