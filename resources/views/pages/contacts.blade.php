@@ -32,8 +32,7 @@
                     <div>
                         <h3 class="font-semibold text-slate-900 mb-1">Адрес</h3>
                         <p class="text-sm text-slate-600 leading-relaxed">
-                            220000, Беларусь<br>
-                            г. Минск, пр-т Независимости
+                            {{ config('bizhub.platform_contacts.address') }}
                         </p>
                     </div>
                 </div>
@@ -49,9 +48,9 @@
                     </div>
                     <div>
                         <h3 class="font-semibold text-slate-900 mb-1">Email</h3>
-                        <a href="mailto:info@bizhub.by"
+                        <a href="mailto:{{ config('bizhub.platform_contacts.email') }}"
                            class="text-sm text-primary-600 hover:text-primary-700 transition-colors font-medium">
-                            info@bizhub.by
+                            {{ config('bizhub.platform_contacts.email') }}
                         </a>
                         <p class="text-xs text-slate-400 mt-1">Ответим в течение 24 часов</p>
                     </div>
@@ -68,11 +67,36 @@
                     </div>
                     <div>
                         <h3 class="font-semibold text-slate-900 mb-1">Телефон</h3>
-                        <a href="tel:+375291234567"
-                           class="text-sm text-primary-600 hover:text-primary-700 transition-colors font-medium">
-                            +375 (29) 123-45-67
+                        @if(config('bizhub.platform_contacts.phone'))
+                            <a href="tel:{{ config('bizhub.platform_contacts.phone') }}"
+                               class="text-sm text-primary-600 hover:text-primary-700 transition-colors font-medium">
+                                {{ config('bizhub.platform_contacts.phone') }}
+                            </a>
+                        @else
+                            <p class="text-sm text-slate-500">Телефон уточняется</p>
+                        @endif
+                        <p class="text-xs text-slate-400 mt-1">{{ config('bizhub.platform_contacts.support_hours') }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Legal Info -->
+            <div class="bg-white rounded-xl border border-slate-100 p-6">
+                <div class="flex items-start gap-4">
+                    <div class="w-11 h-11 bg-indigo-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-slate-900 mb-1">Реквизиты</h3>
+                        <p class="text-sm text-slate-600 leading-relaxed">
+                            {{ config('bizhub.platform_contacts.legal_name') }}<br>
+                            УНП: {{ config('bizhub.platform_contacts.unp') }}
+                        </p>
+                        <a href="{{ route('legal') }}" class="text-sm text-primary-600 hover:text-primary-700 transition-colors font-medium mt-2 inline-block">
+                            Подробнее о юридической поддержке →
                         </a>
-                        <p class="text-xs text-slate-400 mt-1">Пн–Пт, 9:00 – 18:00</p>
                     </div>
                 </div>
             </div>

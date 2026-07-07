@@ -39,6 +39,11 @@ class PageController extends Controller
         return view('pages.show', compact('page'));
     }
 
+    public function legal(): View
+    {
+        return view('pages.legal');
+    }
+
     public function feedback(\Illuminate\Http\Request $request): \Illuminate\Http\RedirectResponse
     {
         $validated = $request->validate([

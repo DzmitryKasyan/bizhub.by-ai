@@ -51,6 +51,7 @@ Route::get('/articles', [ArticleController::class, 'index'])->name('articles.ind
 Route::get('/article/{article:slug}', [ArticleController::class, 'show'])->name('article.show');
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/contacts', [PageController::class, 'contacts'])->name('contacts');
+Route::get('/legal', [PageController::class, 'legal'])->name('legal');
 Route::post('/feedback', [PageController::class, 'feedback'])->name('feedback');
 Route::get('/terms', [PageController::class, 'terms'])->name('terms');
 Route::get('/privacy', [PageController::class, 'privacy'])->name('privacy');
