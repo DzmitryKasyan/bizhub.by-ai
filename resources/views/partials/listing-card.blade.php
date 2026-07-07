@@ -74,6 +74,18 @@ $typeLabel  = $listing->type->label();
             {{ $listing->title }}
         </a>
 
+        <!-- KPIs -->
+        @php $kpis = $listing->kpis; @endphp
+        @if(count($kpis))
+            <div class="flex flex-wrap gap-2 mb-3">
+                @foreach(array_slice($kpis, 0, 4) as $kpi)
+                    <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-slate-50 text-slate-600 border border-slate-100">
+                        {{ $kpi['label'] }}: {{ $kpi['value'] }}
+                    </span>
+                @endforeach
+            </div>
+        @endif
+
         <!-- Price -->
         <div class="mb-3">
             @if($listing->price_on_request)

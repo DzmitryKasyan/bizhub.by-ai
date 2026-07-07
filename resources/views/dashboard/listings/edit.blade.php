@@ -269,6 +269,9 @@
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
                 </div>
+
+                @include('dashboard.listings.partials._business_fields', ['listing' => $listing])
+
             </div>
         </div>
 

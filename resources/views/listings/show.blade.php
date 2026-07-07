@@ -469,7 +469,11 @@ $images = array_unique(array_filter($listing->images_array));
                         <p class="text-xs text-slate-500 uppercase tracking-wide mb-3">Продавец</p>
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                @if($listing->user->avatar)
+                                @if($listing->is_representative)
+                                    <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                    </svg>
+                                @elseif($listing->user->avatar)
                                     <img src="{{ asset('storage/' . $listing->user->avatar) }}"
                                          alt="{{ $listing->user->name }}"
                                          loading="lazy"
@@ -481,10 +485,17 @@ $images = array_unique(array_filter($listing->images_array));
                                 @endif
                             </div>
                             <div>
-                                <p class="font-medium text-slate-900 text-sm">{{ $listing->user->name }}</p>
-                                <p class="text-xs text-slate-400">
-                                    На сайте с {{ $listing->user->created_at->format('Y') }} г.
-                                </p>
+                                @if($listing->is_representative)
+                                    <p class="font-medium text-slate-900 text-sm">Представитель собственника</p>
+                                    @if($listing->representative_note)
+                                        <p class="text-xs text-slate-400">{{ $listing->representative_note }}</p>
+                                    @endif
+                                @else
+                                    <p class="font-medium text-slate-900 text-sm">{{ $listing->user->name }}</p>
+                                    <p class="text-xs text-slate-400">
+                                        На сайте с {{ $listing->user->created_at->format('Y') }} г.
+                                    </p>
+                                @endif
                             </div>
                         </div>
                     </div>

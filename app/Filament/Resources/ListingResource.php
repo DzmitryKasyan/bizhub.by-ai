@@ -76,6 +76,16 @@ class ListingResource extends Resource
                             )
                             ->required(),
 
+                        Select::make('listing_format')
+                            ->label('Тип листинга')
+                            ->options(
+                                collect(\App\Enums\ListingFormat::cases())
+                                    ->mapWithKeys(fn (\App\Enums\ListingFormat $format): array => [
+                                        $format->value => $format->label(),
+                                    ])
+                                    ->all()
+                            ),
+
                         Select::make('status')
                             ->label('Статус')
                             ->options(
@@ -138,6 +148,25 @@ class ListingResource extends Resource
                             ->maxLength(255),
                     ])
                     ->columns(4),
+
+                Section::make('Детали бизнеса')
+                    ->schema([
+                        TextInput::make('rent_conditions')
+                            ->label('Аренда / помещение')
+                            ->maxLength(500),
+
+                        Textarea::make('included_in_deal')
+                            ->label('Что входит в сделку')
+                            ->rows(3)
+                            ->maxLength(1000)
+                            ->columnSpanFull(),
+
+                        Textarea::make('ready_documents')
+                            ->label('Готовые документы')
+                            ->rows(3)
+                            ->maxLength(1000)
+                            ->columnSpanFull(),
+                    ]),
 
                 Section::make('Описание')
                     ->schema([
@@ -408,8 +437,30 @@ class ListingResource extends Resource
 
                         TextEntry::make('location.name')
                             ->label('Регион'),
+
+                        TextEntry::make('listing_format')
+                            ->label('Тип листинга')
+                            ->formatStateUsing(fn (?\App\Enums\ListingFormat $state): string => $state?->label() ?? '—'),
                     ])
                     ->columns(2),
+
+                Section::make('Детали бизнеса')
+                    ->schema([
+                        TextEntry::make('rent_conditions')
+                            ->label('Аренда / помещение')
+                            ->placeholder('Не указано')
+                            ->columnSpanFull(),
+
+                        TextEntry::make('included_in_deal')
+                            ->label('Что входит в сделку')
+                            ->placeholder('Не указано')
+                            ->columnSpanFull(),
+
+                        TextEntry::make('ready_documents')
+                            ->label('Готовые документы')
+                            ->placeholder('Не указано')
+                            ->columnSpanFull(),
+                    ]),
 
                 Section::make('Цена')
                     ->schema([

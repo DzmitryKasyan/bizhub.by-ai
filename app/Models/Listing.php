@@ -57,6 +57,10 @@ class Listing extends Model implements HasMedia
         'employees_count',
         'ownership_type',
         'sale_reason',
+        'listing_format',
+        'rent_conditions',
+        'included_in_deal',
+        'ready_documents',
         'status',
         'rejection_reason',
         'views_count',
@@ -77,6 +81,7 @@ class Listing extends Model implements HasMedia
     {
         return [
             'type' => ListingType::class,
+            'listing_format' => \App\Enums\ListingFormat::class,
             'currency' => Currency::class,
             'ownership_type' => OwnershipType::class,
             'status' => ListingStatus::class,
@@ -305,6 +310,84 @@ class Listing extends Model implements HasMedia
         }
 
         return "{$price} {$symbol}";
+    }
+
+    public function getPaybackYearsAttribute(): ?float
+    {
+        if ($this->monthly_profit && $this->price && (float) $this->monthly_profit > 0) {
+            return round((float) $this->price / (float) $this->monthly_profit / 12, 1);
+        }
+
+        if ($this->payback_months) {
+            return round($this->payback_months / 12, 1);
+        }
+
+        return null;
+    }
+
+    public function getMarginPercentAttribute(): ?float
+    {
+        if ($this->monthly_revenue && $this->monthly_profit && (float) $this->monthly_revenue > 0) {
+            return round(((float) $this->monthly_profit / (float) $this->monthly_revenue) * 100, 1);
+        }
+
+        return null;
+    }
+
+    public function getRoiEstimatePercentAttribute(): ?float
+    {
+        if ($this->monthly_profit && $this->price && (float) $this->price > 0) {
+            return round(((float) $this->monthly_profit * 12 / (float) $this->price) * 100, 1);
+        }
+
+        return null;
+    }
+
+    public function getKpisAttribute(): array
+    {
+        $kpis = [];
+
+        if ($this->monthly_profit) {
+            $kpis[] = [
+                'label' => 'Прибыль/мес',
+                'value' => number_format((float) $this->monthly_profit, 0, '.', ' ') . ' ' . ($this->currency?->symbol() ?? ''),
+            ];
+        }
+
+        if ($this->payback_years !== null) {
+            $kpis[] = [
+                'label' => 'Окупаемость',
+                'value' => $this->payback_years . ' г.',
+            ];
+        } elseif ($this->payback_months) {
+            $kpis[] = [
+                'label' => 'Окупаемость',
+                'value' => $this->payback_months . ' мес.',
+            ];
+        }
+
+        if ($this->margin_percent !== null) {
+            $kpis[] = [
+                'label' => 'Маржа',
+                'value' => $this->margin_percent . '%',
+            ];
+        }
+
+        if ($this->roi_estimate_percent !== null) {
+            $kpis[] = [
+                'label' => 'ROI/год',
+                'value' => $this->roi_estimate_percent . '%',
+            ];
+        }
+
+        if ($this->employees_count !== null) {
+            $kpis[] = [
+                'label' => 'Сотрудников',
+                'value' => (string) $this->employees_count,
+            ];
+        }
+
+        return $kpis;
     }
 
     public function saveContactsAndCoordinate(array $data): void

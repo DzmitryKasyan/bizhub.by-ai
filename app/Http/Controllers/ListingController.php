@@ -13,6 +13,7 @@ use App\Models\ListingImage;
 use App\Models\Location;
 use App\Rules\ValidImageContent;
 use App\Rules\ValidListingPrice;
+use App\Services\ListingValidationService;
 use App\Services\ProhibitedContentService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -225,6 +226,10 @@ class ListingController extends Controller
             'employees_count'   => 'nullable|integer|min:0',
             'ownership_type'    => 'nullable|in:' . implode(',', \App\Enums\OwnershipType::values()),
             'sale_reason'       => 'nullable|string|max:255',
+            'listing_format'    => 'nullable|in:' . implode(',', \App\Enums\ListingFormat::values()),
+            'rent_conditions'   => 'nullable|string|max:500',
+            'included_in_deal'  => 'nullable|string|max:1000',
+            'ready_documents'   => 'nullable|string|max:1000',
             'images.*'          => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:5120', new ValidImageContent],
             'contacts'          => 'nullable|array',
             'contacts.phone'    => 'nullable|string|max:255',
@@ -237,6 +242,7 @@ class ListingController extends Controller
         ]);
 
         $this->ensureNoProhibitedContent($validated);
+        (new ListingValidationService())->validateBusinessFields($validated);
 
         $validated['status'] = $request->input('action') === 'publish'
             ? ListingStatus::Pending
@@ -295,6 +301,10 @@ class ListingController extends Controller
             'employees_count'   => 'nullable|integer|min:0',
             'ownership_type'    => 'nullable|in:' . implode(',', \App\Enums\OwnershipType::values()),
             'sale_reason'       => 'nullable|string|max:255',
+            'listing_format'    => 'nullable|in:' . implode(',', \App\Enums\ListingFormat::values()),
+            'rent_conditions'   => 'nullable|string|max:500',
+            'included_in_deal'  => 'nullable|string|max:1000',
+            'ready_documents'   => 'nullable|string|max:1000',
             'images.*'          => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:5120', new ValidImageContent],
             'contacts'          => 'nullable|array',
             'contacts.phone'    => 'nullable|string|max:255',
@@ -307,6 +317,7 @@ class ListingController extends Controller
         ]);
 
         $this->ensureNoProhibitedContent($validated);
+        (new ListingValidationService())->validateBusinessFields($validated);
 
         $listingData = $validated;
         unset($listingData['contacts'], $listingData['coordinate']);

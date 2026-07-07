@@ -268,6 +268,9 @@
                     @enderror
                     <p class="text-xs text-slate-400 mt-1">Минимум 50 символов. Чем подробнее — тем лучше.</p>
                 </div>
+
+                @include('dashboard.listings.partials._business_fields', ['listing' => new \App\Models\Listing()])
+
             </div>
         </div>
 

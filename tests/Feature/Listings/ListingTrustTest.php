@@ -36,6 +36,14 @@ class ListingTrustTest extends TestCase
             'price' => 1,
             'currency' => 'BYN',
             'category_id' => $this->category->id,
+            'location_id' => $this->location->id,
+            'listing_format' => 'established_business',
+            'rent_conditions' => 'Аренда',
+            'included_in_deal' => 'Бизнес',
+            'ready_documents' => 'Выписка',
+            'employees_count' => 2,
+            'sale_reason' => 'Переезд',
+            'monthly_profit' => 5000,
         ]);
 
         $response->assertSessionHasErrors(['price_strategy']);
@@ -52,6 +60,14 @@ class ListingTrustTest extends TestCase
             'price_on_request' => true,
             'currency' => 'BYN',
             'category_id' => $this->category->id,
+            'location_id' => $this->location->id,
+            'listing_format' => 'established_business',
+            'rent_conditions' => 'Аренда',
+            'included_in_deal' => 'Бизнес',
+            'ready_documents' => 'Выписка',
+            'employees_count' => 2,
+            'sale_reason' => 'Переезд',
+            'monthly_profit' => 5000,
         ]);
 
         $response->assertRedirect();
@@ -72,6 +88,14 @@ class ListingTrustTest extends TestCase
             'price_on_request' => true,
             'currency' => 'BYN',
             'category_id' => $this->category->id,
+            'location_id' => $this->location->id,
+            'listing_format' => 'established_business',
+            'rent_conditions' => 'Аренда',
+            'included_in_deal' => 'Бизнес',
+            'ready_documents' => 'Выписка',
+            'employees_count' => 2,
+            'sale_reason' => 'Переезд',
+            'monthly_profit' => 5000,
         ]);
 
         $response->assertSessionHasErrors(['title']);
