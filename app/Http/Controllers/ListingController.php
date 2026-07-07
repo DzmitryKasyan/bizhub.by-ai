@@ -163,7 +163,14 @@ class ListingController extends Controller
         abort_unless($canView, 404);
 
         $listing->incrementViews();
-        $listing->load(['user.profile', 'category', 'subcategory', 'location', 'images', 'documents', 'contacts', 'coordinate']);
+        $listing->load(['user.profile', 'category', 'subcategory', 'location', 'images', 'documents', 'contacts', 'coordinate', 'verifications']);
+
+        $dealService = new \App\Services\ListingDealService();
+        $canAccessDataRoom = $dealService->canAccessDataRoom($listing, $user);
+        $hasSignedNda = $user ? $dealService->hasSignedNda($listing, $user) : false;
+        $dealProgress = ($user && ($listing->isOwnedBy($user) || $hasSignedNda || $user->isModerator()))
+            ? $dealService->dealProgress($listing, $user)
+            : [];
 
         $similar = Listing::query()
             ->active()
@@ -173,7 +180,13 @@ class ListingController extends Controller
             ->limit(4)
             ->get();
 
-        return view('listings.show', compact('listing', 'similar'));
+        return view('listings.show', compact(
+            'listing',
+            'similar',
+            'canAccessDataRoom',
+            'hasSignedNda',
+            'dealProgress'
+        ));
     }
 
     public function myListings(Request $request): View
@@ -230,6 +243,7 @@ class ListingController extends Controller
             'rent_conditions'   => 'nullable|string|max:500',
             'included_in_deal'  => 'nullable|string|max:1000',
             'ready_documents'   => 'nullable|string|max:1000',
+            'deal_support_requested' => 'nullable|boolean',
             'images.*'          => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:5120', new ValidImageContent],
             'contacts'          => 'nullable|array',
             'contacts.phone'    => 'nullable|string|max:255',
@@ -305,6 +319,7 @@ class ListingController extends Controller
             'rent_conditions'   => 'nullable|string|max:500',
             'included_in_deal'  => 'nullable|string|max:1000',
             'ready_documents'   => 'nullable|string|max:1000',
+            'deal_support_requested' => 'nullable|boolean',
             'images.*'          => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:5120', new ValidImageContent],
             'contacts'          => 'nullable|array',
             'contacts.phone'    => 'nullable|string|max:255',

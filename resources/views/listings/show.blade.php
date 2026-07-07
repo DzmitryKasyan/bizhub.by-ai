@@ -284,36 +284,98 @@ $images = array_unique(array_filter($listing->images_array));
             </div>
             @endif
 
-            <!-- Documents -->
-            @if(isset($listing->documents) && count($listing->documents))
+            <!-- Documents / Data Room -->
+            @php
+                $publicDocuments = $listing->documents->filter(fn($d) => ! $d->is_confidential);
+                $confidentialDocuments = $listing->documents->filter(fn($d) => $d->is_confidential);
+            @endphp
+
+            @if($publicDocuments->count() && $canAccessDataRoom)
             <div class="bg-white rounded-xl border border-slate-100 p-6">
                 <h2 class="text-lg font-semibold text-slate-900 mb-4">Документы</h2>
                 <ul class="space-y-2">
-                    @foreach($listing->documents as $document)
-                        <li>
-                            <a href="{{ asset('storage/' . $document->file_path) }}"
-                               target="_blank"
-                               download="{{ $document->name }}"
-                               class="flex items-center gap-3 p-3 rounded-lg border border-slate-100 hover:border-blue-200 hover:bg-primary-50 transition-colors group">
-                                <div class="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/>
-                                    </svg>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-medium text-slate-900 group-hover:text-primary-700 truncate">{{ $document->name }}</p>
-                                    @if($document->size)
-                                        <p class="text-xs text-slate-400">{{ number_format($document->size / 1024, 0, '.', ' ') }} КБ</p>
-                                    @endif
-                                </div>
-                                <svg class="w-4 h-4 text-slate-400 group-hover:text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                                </svg>
-                            </a>
-                        </li>
+                    @foreach($publicDocuments as $document)
+                        @include('listings.partials.document-row', ['document' => $document])
                     @endforeach
                 </ul>
             </div>
+            @endif
+
+            @if($confidentialDocuments->count() && $canAccessDataRoom)
+            <div class="bg-white rounded-xl border border-slate-100 p-6">
+                <div class="flex items-center gap-2 mb-4">
+                    <h2 class="text-lg font-semibold text-slate-900">Data Room</h2>
+                    <span class="px-2 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-700">NDA подписано</span>
+                </div>
+                <ul class="space-y-2">
+                    @foreach($confidentialDocuments as $document)
+                        @include('listings.partials.document-row', ['document' => $document])
+                    @endforeach
+                </ul>
+            </div>
+            @elseif($confidentialDocuments->count() && auth()->check() && ! $listing->isOwnedBy(auth()->user()))
+            <div class="bg-white rounded-xl border border-slate-100 p-6">
+                <div class="flex items-center gap-2 mb-3">
+                    <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                    <h2 class="text-lg font-semibold text-slate-900">Data Room</h2>
+                </div>
+                <p class="text-sm text-slate-500 mb-4">
+                    Конфиденциальные документы и финансы доступны после подписания NDA.
+                </p>
+                <form action="{{ route('listings.nda.sign', $listing) }}" method="POST" class="space-y-3">
+                    @csrf
+                    <label class="flex items-start gap-3 cursor-pointer">
+                        <input type="checkbox" name="agree" value="1" required class="mt-1 w-4 h-4 text-primary-600 border-slate-300 rounded focus:ring-primary-300">
+                        <span class="text-sm text-slate-600">
+                            Я согласен с условиями NDA и обязуюсь не разглашать конфиденциальную информацию о бизнесе.
+                        </span>
+                    </label>
+                    <button type="submit" class="w-full flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                        </svg>
+                        Подписать NDA
+                    </button>
+                </form>
+            </div>
+            @endif
+
+            @if(count($dealProgress))
+            <div class="bg-white rounded-xl border border-slate-100 p-6">
+                <h2 class="text-lg font-semibold text-slate-900 mb-4">Ход сделки</h2>
+                <div class="space-y-3">
+                    @foreach($dealProgress as $stage)
+                        <div class="flex items-start gap-3">
+                            <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-{{ $stage['color'] }}-100 text-{{ $stage['color'] }}-700 mt-0.5">
+                                {{ $stage['status_label'] }}
+                            </span>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-slate-900">{{ $stage['label'] }}</p>
+                                @if($stage['notes'])
+                                    <p class="text-xs text-slate-500">{{ $stage['notes'] }}</p>
+                                @endif
+                            </div>
+                        </div>
+
+                        @if($listing->isOwnedBy(auth()->user()) || auth()->user()->isModerator() || $hasSignedNda)
+                            <form action="{{ route('listings.deal-stage.update', $listing) }}" method="POST" class="flex items-center gap-2 mt-2">
+                                @csrf
+                                <input type="hidden" name="buyer_id" value="{{ auth()->id() }}">
+                                <input type="hidden" name="stage" value="{{ $stage['stage'] }}">
+                                <select name="status" class="text-sm border-slate-200 rounded-lg">
+                                    @foreach([\App\Enums\DealStageStatus::Pending, \App\Enums\DealStageStatus::InProgress, \App\Enums\DealStageStatus::Done, \App\Enums\DealStageStatus::Skipped] as $statusOption)
+                                        <option value="{{ $statusOption->value }}" {{ $stage['status'] === $statusOption->value ? 'selected' : '' }}>{{ $statusOption->label() }}</option>
+                                    @endforeach
+                                </select>
+                                <input type="text" name="notes" value="{{ $stage['notes'] ?? '' }}" placeholder="Комментарий" class="text-sm border-slate-200 rounded-lg flex-1">
+                                <button type="submit" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-lg">OK</button>
+                            </form>
+                        @endif
+                    @endforeach
+                </div>
+            <div>
             @endif
         </div>
 
@@ -464,6 +526,24 @@ $images = array_unique(array_filter($listing->images_array));
                        class="w-full flex items-center justify-center gap-2 border border-primary-600 text-primary-600 hover:bg-primary-50 font-medium px-6 py-3 rounded-xl transition-colors">
                         Редактировать объявление
                     </a>
+                @endif
+
+                <!-- Deal Support -->
+                @if($listing->deal_support_requested)
+                    <div class="mt-4 p-4 bg-emerald-50 border border-emerald-100 rounded-xl">
+                        <div class="flex items-center gap-2 mb-2">
+                            <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                            </svg>
+                            <p class="font-semibold text-emerald-800 text-sm">Сопровождение сделки</p>
+                        </div>
+                        <p class="text-xs text-emerald-700 mb-2">
+                            Продавец готов к сейф-сделке с юридическим сопровождением BizHub и нотариальным оформлением.
+                        </p>
+                        <p class="text-xs text-emerald-600">
+                            Уточняйте условия в переписке.
+                        </p>
+                    </div>
                 @endif
 
                 <!-- Seller Info -->

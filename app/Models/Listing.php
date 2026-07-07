@@ -61,6 +61,7 @@ class Listing extends Model implements HasMedia
         'rent_conditions',
         'included_in_deal',
         'ready_documents',
+        'deal_support_requested',
         'status',
         'rejection_reason',
         'views_count',
@@ -89,6 +90,7 @@ class Listing extends Model implements HasMedia
             'price_on_request' => 'boolean',
             'is_representative' => 'boolean',
             'address_public' => 'boolean',
+            'deal_support_requested' => 'boolean',
             'is_promoted' => 'boolean',
             'is_highlighted' => 'boolean',
             'is_top' => 'boolean',
@@ -197,6 +199,11 @@ class Listing extends Model implements HasMedia
     public function verifications(): HasMany
     {
         return $this->hasMany(ListingVerification::class);
+    }
+
+    public function dealStages(): HasMany
+    {
+        return $this->hasMany(ListingDealStage::class);
     }
 
     public function ndaSignatures(): HasMany

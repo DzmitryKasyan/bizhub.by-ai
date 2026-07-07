@@ -14,7 +14,15 @@ class ListingDocument extends Model
         'path',
         'original_name',
         'type',
+        'is_confidential',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'is_confidential' => 'boolean',
+        ];
+    }
 
     public function listing(): BelongsTo
     {

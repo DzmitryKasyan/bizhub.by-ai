@@ -9,6 +9,7 @@ use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ListingDealController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\ListingController;
@@ -103,6 +104,10 @@ Route::middleware('auth')->group(function () {
 
     // Reports
     Route::post('/listings/{listing:slug}/report', [ReportController::class, 'store'])->name('listings.report');
+
+    // NDA & Deal
+    Route::post('/listings/{listing:slug}/nda', [ListingDealController::class, 'signNda'])->name('listings.nda.sign');
+    Route::post('/listings/{listing:slug}/deal-stage', [ListingDealController::class, 'updateStage'])->name('listings.deal-stage.update');
 
     // Conversations & Messages
     Route::prefix('messages')->name('messages.')->group(function () {
