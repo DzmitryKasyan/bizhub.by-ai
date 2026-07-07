@@ -162,6 +162,11 @@ $images = array_unique(array_filter($listing->images_array));
                             ТОП объявление
                         </span>
                     @endif
+                    @if($listing->is_representative)
+                        <span class="inline-flex items-center px-3 py-1 rounded-lg text-sm font-medium bg-slate-100 text-slate-600 border border-slate-200">
+                            Представитель собственника
+                        </span>
+                    @endif
                 </div>
                 <h1 class="text-2xl font-bold text-slate-900 mb-4">{{ $listing->title }}</h1>
 
@@ -316,7 +321,10 @@ $images = array_unique(array_filter($listing->images_array));
             <div class="bg-white rounded-xl border border-slate-100 p-6 sticky top-20">
                 <!-- Price -->
                 <div class="mb-5 pb-5 border-b border-slate-100">
-                    @if($listing->price)
+                    @if($listing->price_on_request)
+                        <p class="text-sm text-slate-500 mb-1">Стоимость</p>
+                        <p class="text-2xl font-bold text-slate-900">Цена по запросу</p>
+                    @elseif($listing->price)
                         <p class="text-sm text-slate-500 mb-1">Стоимость</p>
                         <p class="text-3xl font-bold text-slate-900">
                             {{ number_format($listing->price, 0, '.', ' ') }}

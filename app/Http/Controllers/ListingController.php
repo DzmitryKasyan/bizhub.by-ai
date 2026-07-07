@@ -30,6 +30,7 @@ class ListingController extends Controller
         $query = Listing::query()
             ->active()
             ->notExpired()
+            ->where('is_representative', false)
             ->with(['user', 'category', 'location', 'images']);
 
         // Sorting

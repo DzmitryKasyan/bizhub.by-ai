@@ -35,6 +35,7 @@
       x-data="{
           selectedType: '{{ old('type', '') }}',
           priceNegotiable: {{ old('price_negotiable') ? 'true' : 'false' }},
+          priceOnRequest: {{ old('price_on_request') ? 'true' : 'false' }},
           selectedCategory: '{{ old('category_id', '') }}',
       }">
     @csrf
@@ -292,7 +293,7 @@
                                min="0"
                                step="1"
                                placeholder="0"
-                               :disabled="priceNegotiable"
+                               :disabled="priceNegotiable || priceOnRequest"
                                class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 disabled:bg-slate-50 disabled:text-slate-400 @error('price') border-red-400 @enderror">
                         @error('price')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -311,7 +312,7 @@
                                min="0"
                                step="1"
                                placeholder="0"
-                               :disabled="priceNegotiable"
+                               :disabled="priceNegotiable || priceOnRequest"
                                class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 disabled:bg-slate-50 disabled:text-slate-400">
                     </div>
 
@@ -331,17 +332,32 @@
                     </div>
                 </div>
 
-                <!-- Price Negotiable -->
-                <label class="flex items-center gap-3 cursor-pointer select-none">
-                    <input type="checkbox"
-                           id="price_negotiable"
-                           name="price_negotiable"
-                           value="1"
-                           x-model="priceNegotiable"
-                           {{ old('price_negotiable') ? 'checked' : '' }}
-                           class="w-4 h-4 text-primary-600 border-slate-300 rounded focus:ring-primary-300">
-                    <span class="text-sm text-slate-700">Цена договорная (торг уместен)</span>
-                </label>
+                <!-- Price Strategy -->
+                <div class="flex flex-wrap gap-4">
+                    <label class="flex items-center gap-3 cursor-pointer select-none">
+                        <input type="checkbox"
+                               id="price_negotiable"
+                               name="price_negotiable"
+                               value="1"
+                               x-model="priceNegotiable"
+                               {{ old('price_negotiable') ? 'checked' : '' }}
+                               class="w-4 h-4 text-primary-600 border-slate-300 rounded focus:ring-primary-300">
+                        <span class="text-sm text-slate-700">Цена договорная (торг)</span>
+                    </label>
+
+                    <label class="flex items-center gap-3 cursor-pointer select-none">
+                        <input type="checkbox"
+                               id="price_on_request"
+                               name="price_on_request"
+                               value="1"
+                               x-model="priceOnRequest"
+                               {{ old('price_on_request') ? 'checked' : '' }}
+                               class="w-4 h-4 text-primary-600 border-slate-300 rounded focus:ring-primary-300">
+                        <span class="text-sm text-slate-700">Цена по запросу</span>
+                    </label>
+                </div>
+
+                <input type="hidden" name="price_strategy" value="auto">
             </div>
         </div>
 
