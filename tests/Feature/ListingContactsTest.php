@@ -45,6 +45,7 @@ class ListingContactsTest extends TestCase
                 'type'             => 'sell_business',
                 'title'            => 'Test Business With Contacts',
                 'description'      => 'This is a test business description that is long enough.',
+                'price_on_request' => true,
                 'currency'         => 'BYN',
                 'category_id'      => $category->id,
                 'contacts'         => [

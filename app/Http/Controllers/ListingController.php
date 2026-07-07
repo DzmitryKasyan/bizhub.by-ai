@@ -12,10 +12,13 @@ use App\Models\Listing;
 use App\Models\ListingImage;
 use App\Models\Location;
 use App\Rules\ValidImageContent;
+use App\Rules\ValidListingPrice;
+use App\Services\ProhibitedContentService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -199,14 +202,17 @@ class ListingController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        $request->merge(['price_strategy' => $request->input('price_strategy', 'auto')]);
+
         $validated = $request->validate([
             'type'              => 'required|in:' . implode(',', ListingType::values()),
             'title'             => 'required|string|max:255',
             'description'       => 'required|string|min:50',
-            'price'             => 'nullable|numeric|min:0',
-            'price_max'         => 'nullable|numeric|min:0',
+            'price'             => ['nullable', 'numeric', 'min:0'],
+            'price_max'         => ['nullable', 'numeric', 'min:0'],
             'currency'          => 'required|in:' . implode(',', Currency::values()),
-            'price_negotiable'  => 'nullable|boolean',
+            'price_negotiable'  => ['nullable', 'boolean'],
+            'price_on_request'  => ['nullable', 'boolean'],
             'category_id'       => 'required|exists:categories,id',
             'subcategory_id'    => 'nullable|exists:categories,id',
             'location_id'       => 'nullable|exists:locations,id',
@@ -226,7 +232,10 @@ class ListingController extends Controller
             'coordinate.latitude'  => 'nullable|numeric',
             'coordinate.longitude' => 'nullable|numeric',
             'coordinate.address'   => 'nullable|string|max:255',
+            'price_strategy'    => ['required', new ValidListingPrice],
         ]);
+
+        $this->ensureNoProhibitedContent($validated);
 
         $validated['status'] = $request->input('action') === 'publish'
             ? ListingStatus::Pending
@@ -263,14 +272,17 @@ class ListingController extends Controller
     {
         abort_unless($listing->isOwnedBy(auth()->user()) || auth()->user()->isModerator(), 403);
 
+        $request->merge(['price_strategy' => $request->input('price_strategy', 'auto')]);
+
         $validated = $request->validate([
             'type'              => 'required|in:' . implode(',', ListingType::values()),
             'title'             => 'required|string|max:255',
             'description'       => 'required|string|min:50',
-            'price'             => 'nullable|numeric|min:0',
-            'price_max'         => 'nullable|numeric|min:0',
+            'price'             => ['nullable', 'numeric', 'min:0'],
+            'price_max'         => ['nullable', 'numeric', 'min:0'],
             'currency'          => 'required|in:' . implode(',', Currency::values()),
-            'price_negotiable'  => 'nullable|boolean',
+            'price_negotiable'  => ['nullable', 'boolean'],
+            'price_on_request'  => ['nullable', 'boolean'],
             'category_id'       => 'required|exists:categories,id',
             'subcategory_id'    => 'nullable|exists:categories,id',
             'location_id'       => 'nullable|exists:locations,id',
@@ -290,7 +302,10 @@ class ListingController extends Controller
             'coordinate.latitude'  => 'nullable|numeric',
             'coordinate.longitude' => 'nullable|numeric',
             'coordinate.address'   => 'nullable|string|max:255',
+            'price_strategy'    => ['required', new ValidListingPrice],
         ]);
+
+        $this->ensureNoProhibitedContent($validated);
 
         $listingData = $validated;
         unset($listingData['contacts'], $listingData['coordinate']);
@@ -362,6 +377,22 @@ class ListingController extends Controller
     public function trustManagement(Request $request): View
     {
         return $this->index($request->merge(['type' => ListingType::TrustManagement->value]));
+    }
+
+    private function ensureNoProhibitedContent(array $validated): void
+    {
+        $prohibited = new ProhibitedContentService();
+        $errors = [];
+
+        foreach (['title', 'description'] as $field) {
+            if ($prohibited->contains($validated[$field] ?? '')) {
+                $errors[$field] = 'Объявление содержит запрещённую тематику: ' . implode(', ', $prohibited->detect($validated[$field]));
+            }
+        }
+
+        if (!empty($errors)) {
+            throw ValidationException::withMessages($errors);
+        }
     }
 
     private function saveImages(Request $request, Listing $listing): void
