@@ -50,7 +50,14 @@ $typeLabel  = $listing->type->label();
             </span>
         </div>
 
-        @if($listing->is_featured ?? false)
+        <!-- Representative Badge -->
+        @if($listing->is_representative)
+            <div class="absolute top-3 right-3">
+                <span class="inline-flex items-center px-2 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200 shadow-sm">
+                    Представитель собственника
+                </span>
+            </div>
+        @elseif($listing->is_featured ?? false)
             <div class="absolute top-3 right-3">
                 <span class="inline-flex items-center px-2 py-1 rounded-lg text-xs font-semibold bg-gradient-to-r from-amber-400 to-amber-500 text-white shadow-sm">
                     ТОП
@@ -67,9 +74,25 @@ $typeLabel  = $listing->type->label();
             {{ $listing->title }}
         </a>
 
+        <!-- KPIs -->
+        @php $kpis = $listing->kpis; @endphp
+        @if(count($kpis))
+            <div class="flex flex-wrap gap-2 mb-3">
+                @foreach(array_slice($kpis, 0, 4) as $kpi)
+                    <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-slate-50 text-slate-600 border border-slate-100">
+                        {{ $kpi['label'] }}: {{ $kpi['value'] }}
+                    </span>
+                @endforeach
+            </div>
+        @endif
+
+        @include('partials.listing-trust-badges', ['badges' => app(\App\Services\ListingTrustBadgeService::class)->forListing($listing), 'class' => 'mb-3'])
+
         <!-- Price -->
         <div class="mb-3">
-            @if($listing->price)
+            @if($listing->price_on_request)
+                <span class="text-lg font-semibold text-slate-700">Цена по запросу</span>
+            @elseif($listing->price)
                 <span class="text-xl font-bold text-slate-900">
                     {{ number_format($listing->price, 0, '.', ' ') }}
                 </span>

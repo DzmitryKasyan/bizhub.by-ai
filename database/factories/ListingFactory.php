@@ -23,17 +23,24 @@ class ListingFactory extends Factory
         $title = fake()->sentence(4);
 
         return [
-            'user_id'     => User::factory(),
-            'type'        => fake()->randomElement(ListingType::cases())->value,
-            'category_id' => Category::factory(),
-            'title'       => $title,
-            'slug'        => Str::slug($title) . '-' . fake()->unique()->randomNumber(5),
-            'description' => fake()->paragraphs(3, true),
-            'price'       => fake()->optional(0.8)->numberBetween(1000, 1000000),
-            'currency'    => Currency::BYN->value,
-            'status'      => ListingStatus::Active->value,
-            'location_id' => Location::factory(),
-            'expires_at'  => now()->addDays(30),
+            'user_id'           => User::factory(),
+            'type'              => fake()->randomElement(ListingType::cases())->value,
+            'category_id'       => Category::factory(),
+            'title'             => $title,
+            'slug'              => Str::slug($title) . '-' . fake()->unique()->randomNumber(5),
+            'description'       => fake()->paragraphs(3, true),
+            'price'             => fake()->optional(0.8)->numberBetween(1000, 1000000),
+            'currency'          => Currency::BYN->value,
+            'status'            => ListingStatus::Active->value,
+            'location_id'       => Location::factory(),
+            'expires_at'        => now()->addDays(30),
+            'listing_format'    => fake()->randomElement(\App\Enums\ListingFormat::cases())->value,
+            'rent_conditions'   => fake()->sentence(6),
+            'included_in_deal'  => fake()->sentence(8),
+            'ready_documents'   => fake()->sentence(6),
+            'employees_count'   => fake()->numberBetween(1, 50),
+            'sale_reason'       => fake()->sentence(4),
+            'monthly_profit'    => fake()->numberBetween(1000, 50000),
         ];
     }
 

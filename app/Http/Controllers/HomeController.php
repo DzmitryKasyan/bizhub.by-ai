@@ -29,6 +29,7 @@ class HomeController extends Controller
         $recentListings = Listing::query()
             ->active()
             ->with(['category', 'location', 'images'])
+            ->where('is_representative', false)
             ->whereHas('images')
             ->latest()
             ->limit(12)

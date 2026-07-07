@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Listing;
 use App\Models\ListingImage;
 use App\Models\Location;
+use App\Services\ProhibitedContentService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -78,6 +79,10 @@ class OnlinerImportCommand extends Command
             $title = html_entity_decode($item['title'] ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8');
             $description = html_entity_decode($item['description'] ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8');
 
+            if ((new ProhibitedContentService())->contains($title . ' ' . $description)) {
+                continue;
+            }
+
             // Skip existing
             if (Listing::where('title', $title)->exists()) {
                 continue;
@@ -88,22 +93,30 @@ class OnlinerImportCommand extends Command
 
             $locationId = $this->locationMap[$item['location']] ?? 2;
             $price = $item['price'] ?? 0;
-            if (!$price || $price < 1) $price = 1;
+            $priceOnRequest = false;
+
+            if (!$price || $price < 1) {
+                $price = null;
+                $priceOnRequest = true;
+            }
 
             $listing = Listing::create([
-                'user_id'       => $userId,
-                'type'          => $type,
-                'category_id'   => $categoryId,
-                'title'         => $title,
-                'description'   => $description ?: $title,
-                'price'         => $price,
-                'currency'      => 'BYN',
-                'location_id'   => $locationId,
-                'status'        => 'active',
-                'views_count'   => rand(50, 400),
-                'expires_at'    => $now->copy()->addDays(rand(30, 90)),
-                'created_at'    => $now->copy()->subDays(rand(1, 14)),
-                'updated_at'    => $now,
+                'user_id'            => $userId,
+                'type'               => $type,
+                'category_id'        => $categoryId,
+                'title'              => $title,
+                'description'        => $description ?: $title,
+                'price'              => $price,
+                'price_on_request'   => $priceOnRequest,
+                'currency'           => 'BYN',
+                'location_id'        => $locationId,
+                'status'             => 'active',
+                'is_representative'  => true,
+                'representative_note'=> config('bizhub.representative_default_note'),
+                'views_count'        => rand(50, 400),
+                'expires_at'         => $now->copy()->addDays(rand(30, 90)),
+                'created_at'         => $now->copy()->subDays(rand(1, 14)),
+                'updated_at'         => $now,
             ]);
 
             // Save contacts

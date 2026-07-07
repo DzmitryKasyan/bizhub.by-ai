@@ -41,6 +41,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia
         'is_premium',
         'phone',
         'phone_verified_at',
+        'identity_verified_at',
         'rating',
         'reviews_count',
     ];
@@ -55,6 +56,7 @@ class User extends Authenticatable implements FilamentUser, HasMedia
         return [
             'email_verified_at' => 'datetime',
             'phone_verified_at' => 'datetime',
+            'identity_verified_at' => 'datetime',
             'password' => 'hashed',
             'role' => UserRole::class,
             'is_verified' => 'boolean',
