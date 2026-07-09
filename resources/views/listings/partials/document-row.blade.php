@@ -3,9 +3,7 @@
 @endphp
 
 <li>
-    <a href="{{ $document->url }}"
-       target="_blank"
-       download="{{ $document->original_name }}"
+    <a href="{{ route('listings.documents.download', [$listing->slug, $document]) }}"
        class="flex items-center gap-3 p-3 rounded-lg border border-slate-100 hover:border-blue-200 hover:bg-primary-50 transition-colors group">
         <div class="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center flex-shrink-0">
             <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">

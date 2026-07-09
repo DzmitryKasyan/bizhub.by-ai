@@ -290,61 +290,101 @@ $images = array_unique(array_filter($listing->images_array));
                 $confidentialDocuments = $listing->documents->filter(fn($d) => $d->is_confidential);
             @endphp
 
-            @if($publicDocuments->count() && $canAccessDataRoom)
+            @if($publicDocuments->count())
             <div class="bg-white rounded-xl border border-slate-100 p-6">
                 <h2 class="text-lg font-semibold text-slate-900 mb-4">Документы</h2>
                 <ul class="space-y-2">
                     @foreach($publicDocuments as $document)
-                        @include('listings.partials.document-row', ['document' => $document])
+                        @include('listings.partials.document-row', ['document' => $document, 'listing' => $listing])
                     @endforeach
                 </ul>
             </div>
             @endif
 
-            @if($confidentialDocuments->count() && $canAccessDataRoom)
+            @if($confidentialDocuments->count())
             <div class="bg-white rounded-xl border border-slate-100 p-6">
-                <div class="flex items-center gap-2 mb-4">
-                    <h2 class="text-lg font-semibold text-slate-900">Data Room</h2>
-                    <span class="px-2 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-700">NDA подписано</span>
-                </div>
-                <ul class="space-y-2">
-                    @foreach($confidentialDocuments as $document)
-                        @include('listings.partials.document-row', ['document' => $document])
-                    @endforeach
-                </ul>
-            </div>
-            @elseif($confidentialDocuments->count() && auth()->check() && ! $listing->isOwnedBy(auth()->user()))
-            <div class="bg-white rounded-xl border border-slate-100 p-6">
-                <div class="flex items-center gap-2 mb-3">
-                    <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                    </svg>
-                    <h2 class="text-lg font-semibold text-slate-900">Data Room</h2>
-                </div>
-                <p class="text-sm text-slate-500 mb-4">
-                    Конфиденциальные документы и финансы доступны после подписания NDA.
-                </p>
-                <form action="{{ route('listings.nda.sign', $listing) }}" method="POST" class="space-y-3">
-                    @csrf
-                    <label class="flex items-start gap-3 cursor-pointer">
-                        <input type="checkbox" name="agree" value="1" required class="mt-1 w-4 h-4 text-primary-600 border-slate-300 rounded focus:ring-primary-300">
-                        <span class="text-sm text-slate-600">
-                            Я согласен с условиями NDA и обязуюсь не разглашать конфиденциальную информацию о бизнесе.
-                        </span>
-                    </label>
-                    <button type="submit" class="w-full flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                @if($hasSignedNda || (auth()->check() && ($listing->isOwnedBy(auth()->user()) || auth()->user()->isModerator())))
+                    <div class="flex items-center gap-2 mb-4">
+                        <h2 class="text-lg font-semibold text-slate-900">Data Room</h2>
+                        <span class="px-2 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-700">NDA подписано</span>
+                    </div>
+                    <ul class="space-y-2">
+                        @foreach($confidentialDocuments as $document)
+                            @include('listings.partials.document-row', ['document' => $document, 'listing' => $listing])
+                        @endforeach
+                    </ul>
+                @else
+                    <div class="flex items-center gap-2 mb-3">
+                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                         </svg>
-                        Подписать NDA
-                    </button>
-                </form>
+                        <h2 class="text-lg font-semibold text-slate-900">Data Room</h2>
+                    </div>
+                    <p class="text-sm text-slate-500 mb-4">
+                        Конфиденциальные документы и финансы доступны после подписания NDA.
+                    </p>
+                    @if(auth()->check() && ! $listing->isOwnedBy(auth()->user()))
+                        <form action="{{ route('listings.nda.sign', $listing) }}" method="POST" class="space-y-3 nda-form">
+                            @csrf
+                            <label class="flex items-start gap-3 cursor-pointer">
+                                <input type="checkbox" name="agree" value="1" required class="mt-1 w-4 h-4 text-primary-600 border-slate-300 rounded focus:ring-primary-300 nda-agree">
+                                <span class="text-sm text-slate-600">
+                                    Я согласен с условиями NDA и обязуюсь не разглашать конфиденциальную информацию о бизнесе.
+                                </span>
+                            </label>
+                            <button type="submit" class="w-full flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                                </svg>
+                                Подписать NDA
+                            </button>
+                        </form>
+                        <script>
+                            (function() {
+                                const form = document.currentScript.previousElementSibling;
+                                const checkbox = form.querySelector('.nda-agree');
+                                form.addEventListener('submit', function(e) {
+                                    if (!checkbox.checked) {
+                                        e.preventDefault();
+                                        checkbox.focus();
+                                        return false;
+                                    }
+                                });
+                            })();
+                        </script>
+                    @elseif(! auth()->check())
+                        <a href="{{ route('login') }}" class="w-full flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors">
+                            Войдите, чтобы подписать NDA
+                        </a>
+                    @endif
+                @endif
             </div>
             @endif
 
             @if(count($dealProgress))
             <div class="bg-white rounded-xl border border-slate-100 p-6">
-                <h2 class="text-lg font-semibold text-slate-900 mb-4">Ход сделки</h2>
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold text-slate-900">Ход сделки</h2>
+                    @if(count($participatingBuyers) > 1)
+                        <form method="GET" class="flex items-center gap-2">
+                            <label class="text-xs text-slate-500">Покупатель:</label>
+                            <select name="buyer_id" onchange="this.form.submit()" class="text-sm border-slate-200 rounded-lg">
+                                @foreach($participatingBuyers as $buyerOption)
+                                    <option value="{{ $buyerOption['id'] }}" {{ $selectedBuyer->id == $buyerOption['id'] ? 'selected' : '' }}>
+                                        {{ $buyerOption['name'] }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </form>
+                    @endif
+                </div>
+
+                @if(count($participatingBuyers) > 0 && ($listing->isOwnedBy(auth()->user()) || auth()->user()->isModerator()))
+                    <p class="text-xs text-slate-500 mb-3">
+                        Вы редактируете статусы для покупателя <strong>{{ $selectedBuyer->name }}</strong>.
+                    </p>
+                @endif
+
                 <div class="space-y-3">
                     @foreach($dealProgress as $stage)
                         <div class="flex items-start gap-3">
@@ -362,7 +402,7 @@ $images = array_unique(array_filter($listing->images_array));
                         @if($listing->isOwnedBy(auth()->user()) || auth()->user()->isModerator() || $hasSignedNda)
                             <form action="{{ route('listings.deal-stage.update', $listing) }}" method="POST" class="flex items-center gap-2 mt-2">
                                 @csrf
-                                <input type="hidden" name="buyer_id" value="{{ auth()->id() }}">
+                                <input type="hidden" name="buyer_id" value="{{ $selectedBuyer->id }}">
                                 <input type="hidden" name="stage" value="{{ $stage['stage'] }}">
                                 <select name="status" class="text-sm border-slate-200 rounded-lg">
                                     @foreach([\App\Enums\DealStageStatus::Pending, \App\Enums\DealStageStatus::InProgress, \App\Enums\DealStageStatus::Done, \App\Enums\DealStageStatus::Skipped] as $statusOption)
@@ -375,7 +415,7 @@ $images = array_unique(array_filter($listing->images_array));
                         @endif
                     @endforeach
                 </div>
-            <div>
+            </div>
             @endif
         </div>
 

@@ -13,6 +13,7 @@ use App\Http\Controllers\ListingDealController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\ListingController;
+use App\Http\Controllers\ListingDocumentController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
@@ -92,8 +93,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/{listing:slug}/edit', [ListingController::class, 'edit'])->name('edit');
         Route::put('/{listing:slug}', [ListingController::class, 'update'])->name('update');
         Route::delete('/{listing:slug}', [ListingController::class, 'destroy'])->name('destroy');
-        Route::post('/{listing:slug}/publish', [ListingController::class, 'publish'])->name('publish');
-        Route::post('/{listing:slug}/archive', [ListingController::class, 'archive'])->name('archive');
+        Route::patch('/{listing:slug}/publish', [ListingController::class, 'publish'])->name('publish');
+        Route::patch('/{listing:slug}/archive', [ListingController::class, 'archive'])->name('archive');
     });
 
     // Favorites
@@ -108,6 +109,11 @@ Route::middleware('auth')->group(function () {
     // NDA & Deal
     Route::post('/listings/{listing:slug}/nda', [ListingDealController::class, 'signNda'])->name('listings.nda.sign');
     Route::post('/listings/{listing:slug}/deal-stage', [ListingDealController::class, 'updateStage'])->name('listings.deal-stage.update');
+
+    // Documents
+    Route::get('/listings/{listing:slug}/documents/{document}/download', [ListingDocumentController::class, 'download'])->name('listings.documents.download');
+    Route::post('/listings/{listing:slug}/documents', [ListingDocumentController::class, 'store'])->name('listings.documents.store');
+    Route::delete('/listings/{listing:slug}/documents/{document}', [ListingDocumentController::class, 'destroy'])->name('listings.documents.destroy');
 
     // Conversations & Messages
     Route::prefix('messages')->name('messages.')->group(function () {

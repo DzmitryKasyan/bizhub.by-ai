@@ -91,4 +91,21 @@ final class ListingDealService
             ]
         );
     }
+
+    /**
+     * @return array<int, array{id: int, name: string, company_name: ?string, signed_at: ?string}>
+     */
+    public function participatingBuyers(Listing $listing): array
+    {
+        return $listing->ndaSignatures()
+            ->with('buyer')
+            ->get()
+            ->map(fn (NdaSignature $signature) => [
+                'id' => $signature->buyer->id,
+                'name' => $signature->buyer->name,
+                'company_name' => $signature->buyer->company_name,
+                'signed_at' => $signature->signed_at?->format('d.m.Y H:i'),
+            ])
+            ->toArray();
+    }
 }

@@ -31,7 +31,7 @@ class ListingDocument extends Model
 
     public function getUrlAttribute(): string
     {
-        return asset('storage/' . $this->path);
+        return route('listings.documents.download', [$this->listing->slug, $this]);
     }
 
     public function getTypeLabel(): string

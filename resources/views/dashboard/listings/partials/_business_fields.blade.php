@@ -13,7 +13,7 @@
                     class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 bg-white @error('listing_format') border-red-400 @enderror">
                 <option value="">Выберите тип листинга</option>
                 @foreach(\App\Enums\ListingFormat::cases() as $format)
-                    <option value="{{ $format->value }}" {{ old('listing_format', $listing->listing_format ?? '') === $format->value ? 'selected' : '' }}>
+                    <option value="{{ $format->value }}" {{ old('listing_format', $listing->listing_format?->value ?? '') === $format->value ? 'selected' : '' }}>
                         {{ $format->label() }}
                     </option>
                 @endforeach

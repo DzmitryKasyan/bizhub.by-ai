@@ -451,35 +451,45 @@
             </div>
             <div class="p-6">
                 <!-- Existing Images -->
-                @if($listing->main_image || ($listing->images && count($listing->images)))
-                    <div class="mb-4">
+                @if($listing->main_image || $listing->images->count() > 0)
+                    <div class="mb-4" x-data="{ selected: [] }">
                         <p class="text-sm font-medium text-slate-700 mb-3">Текущие фотографии</p>
                         <div class="flex flex-wrap gap-3">
-                            @if($listing->main_image)
-                                <div class="relative group">
-                                    <img src="{{ asset('storage/' . $listing->main_image) }}"
-                                         alt="Главное фото"
-                                         class="w-24 h-20 object-cover rounded-lg border border-slate-200">
-                                    <div class="absolute top-1 left-1 bg-primary-600 text-white text-xs px-1.5 py-0.5 rounded font-medium">
-                                        Главное
+                            @foreach($listing->images as $image)
+                                <label class="relative cursor-pointer select-none"
+                                       :class="selected.includes('{{ $image->id }}') ? 'ring-2 ring-red-500 rounded-lg' : ''"
+                                       x-on:click.prevent="
+                                           if (selected.includes('{{ $image->id }}')) {
+                                               selected = selected.filter(id => id !== '{{ $image->id }}');
+                                           } else {
+                                               selected.push('{{ $image->id }}');
+                                           }
+                                       ">
+                                    <input type="checkbox" name="delete_images[]" value="{{ $image->id }}"
+                                           x-model="selected"
+                                           class="peer sr-only">
+                                    <img src="{{ asset('storage/' . $image->path) }}"
+                                         alt=""
+                                         class="w-24 h-20 object-cover rounded-lg border border-slate-200 peer-checked:opacity-50 peer-checked:grayscale">
+                                    @if($image->is_main)
+                                        <div class="absolute top-1 left-1 bg-primary-600 text-white text-xs px-1.5 py-0.5 rounded font-medium">
+                                            Главное
+                                        </div>
+                                    @endif
+                                    <div class="absolute top-1 right-1 flex items-center justify-center w-5 h-5 rounded-full text-xs font-bold transition-colors"
+                                         :class="selected.includes('{{ $image->id }}') ? 'bg-red-600 text-white' : 'bg-slate-800/70 text-white hover:bg-red-500'">
+                                        <span x-show="!selected.includes('{{ $image->id }}')">×</span>
+                                        <span x-show="selected.includes('{{ $image->id }}')">✓</span>
                                     </div>
-                                </div>
-                            @endif
-                            @if($listing->images && is_array($listing->images))
-                                @foreach($listing->images as $img)
-                                    <div class="relative group">
-                                        <img src="{{ asset('storage/' . $img) }}"
-                                             alt=""
-                                             class="w-24 h-20 object-cover rounded-lg border border-slate-200">
-                                        <label class="absolute top-1 right-1 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <input type="checkbox" name="delete_images[]" value="{{ $img }}" class="sr-only">
-                                            <span class="flex items-center justify-center w-5 h-5 bg-red-500 text-white rounded-full text-xs font-bold">×</span>
-                                        </label>
+                                    <div x-show="selected.includes('{{ $image->id }}')"
+                                         class="absolute inset-0 flex items-center justify-center bg-red-500/10 rounded-lg pointer-events-none"
+                                         style="display: none;">
+                                        <span class="text-xs font-medium text-red-700 bg-white/90 px-2 py-0.5 rounded">На удаление</span>
                                     </div>
-                                @endforeach
-                            @endif
+                                </label>
+                            @endforeach
                         </div>
-                        <p class="text-xs text-slate-400 mt-2">Наведите на фото и нажмите ×, чтобы отметить на удаление</p>
+                        <p class="text-xs text-slate-500 mt-2">Нажмите на фото, чтобы отметить его на удаление. Нажмите ещё раз, чтобы отменить.</p>
                     </div>
                 @endif
 
@@ -511,6 +521,104 @@
                         </div>
                     </template>
                 </div>
+            </div>
+        </div>
+
+        <!-- Section 6: Documents -->
+        <div class="bg-white rounded-xl border border-slate-100 overflow-hidden mt-6">
+            <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+                <h2 class="font-semibold text-slate-900 flex items-center gap-2">
+                    <span class="w-6 h-6 bg-primary-600 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">6</span>
+                    Документы сделки
+                </h2>
+            </div>
+            <div class="p-6">
+                <!-- Existing Documents -->
+                @if($listing->documents->count() > 0)
+                    <div class="mb-4">
+                        <p class="text-sm font-medium text-slate-700 mb-3">Загруженные документы</p>
+                        <div class="space-y-2">
+                            @foreach($listing->documents as $document)
+                                <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100">
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        <svg class="w-5 h-5 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        </svg>
+                                        <div class="min-w-0">
+                                            <p class="text-sm text-slate-700 truncate">{{ $document->original_name }}</p>
+                                            <p class="text-xs text-slate-400">
+                                                {{ $document->getTypeLabel() }}
+                                                @if($document->is_confidential)
+                                                    <span class="ml-2 inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-700">Требует NDA</span>
+                                                @else
+                                                    <span class="ml-2 inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-green-100 text-green-700">Публичный</span>
+                                                @endif
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <form method="POST"
+                                          action="{{ route('listings.documents.destroy', [$listing->slug, $document]) }}"
+                                          onsubmit="return confirm('Удалить документ?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Удалить">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Upload Form -->
+                <form action="{{ route('listings.documents.store', $listing->slug) }}"
+                      method="POST"
+                      enctype="multipart/form-data"
+                      class="space-y-4">
+                    @csrf
+                    <div>
+                        <label class="block w-full cursor-pointer">
+                            <div class="border-2 border-dashed border-slate-200 hover:border-primary-300 rounded-xl p-6 text-center transition-colors">
+                                <svg class="w-8 h-8 text-slate-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"/>
+                                </svg>
+                                <p class="text-sm font-medium text-slate-700">Загрузить документы</p>
+                                <p class="text-xs text-slate-400 mt-1">PDF, DOC, XLS, JPG/PNG до 10 МБ каждый, макс. 10 файлов</p>
+                            </div>
+                            <input type="file"
+                                   name="documents[]"
+                                   multiple
+                                   accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.jpg,.jpeg,.png,.webp"
+                                   class="sr-only">
+                        </label>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="document_type" class="block text-sm font-medium text-slate-700 mb-1.5">Тип документа</label>
+                            <select id="document_type" name="document_type" class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 bg-white">
+                                @foreach(['financial' => 'Финансы', 'legal' => 'Юридический', 'presentation' => 'Презентация', 'other' => 'Другое'] as $value => $label)
+                                    <option value="{{ $value }}">{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="flex items-center">
+                            <label class="flex items-center gap-3 cursor-pointer select-none">
+                                <input type="checkbox"
+                                       name="is_confidential"
+                                       value="1"
+                                       class="w-4 h-4 text-primary-600 border-slate-300 rounded focus:ring-primary-300">
+                                <span class="text-sm text-slate-700">Конфиденциально (требует NDA)</span>
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit"
+                            class="mt-4 px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold rounded-xl transition-colors">
+                        Загрузить
+                    </button>
+                </form>
             </div>
         </div>
 

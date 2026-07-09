@@ -32,11 +32,16 @@ class ListingDealFlowTest extends TestCase
     }
 
     #[Test]
-    public function seller_can_update_deal_stage(): void
+    public function seller_can_update_deal_stage_for_buyer_with_nda(): void
     {
         $seller = User::factory()->create();
         $buyer = User::factory()->create();
         $listing = Listing::factory()->create(['user_id' => $seller->id]);
+
+        // Buyer signs NDA first — deal progress is only tracked for NDA-signed buyers.
+        $this->actingAs($buyer)
+            ->post(route('listings.nda.sign', $listing), ['agree' => '1'])
+            ->assertRedirect();
 
         $this->actingAs($seller)
             ->post(route('listings.deal-stage.update', $listing), [
@@ -54,6 +59,23 @@ class ListingDealFlowTest extends TestCase
             'status' => DealStageStatus::Done->value,
             'notes' => 'Встреча состоялась',
         ]);
+    }
+
+    #[Test]
+    public function seller_cannot_update_deal_stage_without_nda(): void
+    {
+        $seller = User::factory()->create();
+        $buyer = User::factory()->create();
+        $listing = Listing::factory()->create(['user_id' => $seller->id]);
+
+        $this->actingAs($seller)
+            ->post(route('listings.deal-stage.update', $listing), [
+                'stage' => DealStage::Meeting->value,
+                'status' => DealStageStatus::Done->value,
+                'buyer_id' => $buyer->id,
+                'notes' => 'Встреча состоялась',
+            ])
+            ->assertForbidden();
     }
 
     #[Test]
