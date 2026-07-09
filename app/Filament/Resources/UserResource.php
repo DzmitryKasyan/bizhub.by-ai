@@ -87,7 +87,7 @@ class UserResource extends Resource
                     ->label('Верифицирован')
                     ->boolean(),
 
-                IconColumn::make('hasVerifiedPhone')
+                IconColumn::make('phone_verified_at')
                     ->label('Телефон подтверждён')
                     ->boolean(),
 
