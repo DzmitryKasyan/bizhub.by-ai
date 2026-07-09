@@ -167,8 +167,18 @@ class ListingController extends Controller
         $dealService = new \App\Services\ListingDealService();
         $canAccessDataRoom = $dealService->canAccessDataRoom($listing, $user);
         $hasSignedNda = $user ? $dealService->hasSignedNda($listing, $user) : false;
+
+        // For the seller/moderator, show progress against the selected buyer (first NDA signer by default).
+        $participatingBuyers = [];
+        $selectedBuyer = $user;
+        if ($user && ($listing->isOwnedBy($user) || $user->isModerator())) {
+            $participatingBuyers = $dealService->participatingBuyers($listing);
+            $selectedBuyerId = request('buyer_id', $participatingBuyers[0]['id'] ?? $user->id);
+            $selectedBuyer = \App\Models\User::find($selectedBuyerId) ?: $user;
+        }
+
         $dealProgress = ($user && ($listing->isOwnedBy($user) || $hasSignedNda || $user->isModerator()))
-            ? $dealService->dealProgress($listing, $user)
+            ? $dealService->dealProgress($listing, $selectedBuyer)
             : [];
 
         $similar = Listing::query()
@@ -184,7 +194,9 @@ class ListingController extends Controller
             'similar',
             'canAccessDataRoom',
             'hasSignedNda',
-            'dealProgress'
+            'dealProgress',
+            'participatingBuyers',
+            'selectedBuyer'
         ));
     }
 
@@ -244,6 +256,8 @@ class ListingController extends Controller
             'ready_documents'   => 'nullable|string|max:1000',
             'deal_support_requested' => 'nullable|boolean',
             'images.*'          => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:5120', new ValidImageContent],
+            'delete_images'     => 'nullable|array',
+            'delete_images.*'   => 'integer|exists:listing_images,id',
             'contacts'          => 'nullable|array',
             'contacts.phone'    => 'nullable|string|max:255',
             'contacts.telegram' => 'nullable|string|max:255',
@@ -320,6 +334,8 @@ class ListingController extends Controller
             'ready_documents'   => 'nullable|string|max:1000',
             'deal_support_requested' => 'nullable|boolean',
             'images.*'          => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:5120', new ValidImageContent],
+            'delete_images'     => 'nullable|array',
+            'delete_images.*'   => 'integer|exists:listing_images,id',
             'contacts'          => 'nullable|array',
             'contacts.phone'    => 'nullable|string|max:255',
             'contacts.telegram' => 'nullable|string|max:255',
@@ -329,6 +345,7 @@ class ListingController extends Controller
             'coordinate.address'   => 'nullable|string|max:255',
             'price_strategy'    => ['required', new ValidListingPrice],
         ]);
+        \Illuminate\Support\Facades\Log::info('UPDATE after validation');
 
         $this->ensureNoProhibitedContent($validated);
         (new ListingValidationService())->validateBusinessFields($validated);
@@ -339,6 +356,7 @@ class ListingController extends Controller
         $listing->update($listingData);
 
         $listing->saveContactsAndCoordinate($validated);
+        $this->deleteImages($request, $listing);
         $this->saveImages($request, $listing);
 
         return redirect()->route('my-listings.edit', $listing)
@@ -436,22 +454,41 @@ class ListingController extends Controller
                 continue;
             }
 
-            $image = $manager->read($file->getPathname());
+            $image = $manager->decodePath($file->getPathname());
 
-            $image->resize(1920, 1920, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
+            $image->scaleDown(1920, 1920);
 
             $filename = Str::uuid() . '.webp';
             $path = 'listings/' . $filename;
-            Storage::disk('public')->put($path, $image->toWebp(80));
+            Storage::disk('public')->put($path, $image->encode(new \Intervention\Image\Encoders\WebpEncoder(80))->toString());
 
             $listing->images()->create([
                 'path'       => $path,
                 'is_main'    => $existingCount === 0 && $i === 0,
                 'sort_order' => $existingCount + $i,
             ]);
+        }
+    }
+
+    private function deleteImages(Request $request, Listing $listing): void
+    {
+        $ids = $request->input('delete_images', []);
+        if (empty($ids)) {
+            return;
+        }
+
+        $images = $listing->images()->whereIn('id', $ids)->get();
+        foreach ($images as $image) {
+            Storage::disk('public')->delete($image->path);
+            $image->delete();
+        }
+
+        // Promote the first remaining image to main if no main left.
+        if ($listing->images()->where('is_main', true)->doesntExist()) {
+            $first = $listing->images()->orderBy('sort_order')->first();
+            if ($first) {
+                $first->update(['is_main' => true]);
+            }
         }
     }
 }

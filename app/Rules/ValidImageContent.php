@@ -41,7 +41,7 @@ class ValidImageContent implements ValidationRule
 
         try {
             $manager = new ImageManager(new Driver());
-            $image = $manager->read($value->getPathname());
+            $image = $manager->decodePath($value->getPathname());
 
             $width = $image->width();
             $height = $image->height();
@@ -52,7 +52,7 @@ class ValidImageContent implements ValidationRule
             }
 
             // Try to re-encode to webp to ensure it is a real image
-            $image->toWebp(80);
+            $image->encode(new \Intervention\Image\Encoders\WebpEncoder(80));
         } catch (\Exception $e) {
             $fail('Файл «' . $attribute . '» не является корректным изображением.');
         }

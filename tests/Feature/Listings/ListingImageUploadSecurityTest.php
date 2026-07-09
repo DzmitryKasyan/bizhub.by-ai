@@ -41,7 +41,9 @@ class ListingImageUploadSecurityTest extends TestCase
     private function realPngFile(): UploadedFile
     {
         $tmp = tempnam(sys_get_temp_dir(), 'png');
-        file_put_contents($tmp, base64_decode(self::MINIMAL_PNG));
+        $img = imagecreatetruecolor(10, 10);
+        imagepng($img, $tmp);
+        imagedestroy($img);
         return new UploadedFile($tmp, 'photo.png', 'image/png', null, true);
     }
 

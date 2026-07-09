@@ -57,8 +57,18 @@ class ListingDealController extends Controller
 
         $buyer = \App\Models\User::findOrFail($validated['buyer_id']);
 
+        // Both seller and buyer (with signed NDA) can update stages, but only for this buyer.
         if (! $listing->isOwnedBy($user) && ! $user->isModerator() && $buyer->id !== $user->id) {
             throw ValidationException::withMessages(['buyer_id' => 'Вы не можете менять статус для другого покупателя.']);
+        }
+
+        // Seller/moderator can update any participating buyer's stage.
+        if ($listing->isOwnedBy($user) || $user->isModerator()) {
+            abort_unless(
+                $buyer->id === $user->id || $this->dealService->hasSignedNda($listing, $buyer),
+                403,
+                'Указанный покупатель не подписал NDA.'
+            );
         }
 
         $this->dealService->updateStage(

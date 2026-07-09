@@ -154,8 +154,23 @@ $statusConfig = [
                                         </svg>
                                     </a>
 
+                                    <!-- Publish -->
+                                    @if($listing->status->value === 'draft' || $listing->status->value === 'rejected')
+                                        <form method="POST" action="{{ route('my-listings.publish', $listing->slug) }}">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit"
+                                                    class="p-1.5 text-slate-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                                                    title="На модерацию">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    @endif
+
                                     <!-- Toggle Archive/Publish -->
-                                    @if($listing->status === 'active')
+                                    @if($listing->status->value === 'active')
                                         <form method="POST" action="{{ route('my-listings.archive', $listing->slug) }}">
                                             @csrf
                                             @method('PATCH')
@@ -167,7 +182,7 @@ $statusConfig = [
                                                 </svg>
                                             </button>
                                         </form>
-                                    @elseif($listing->status === 'archived')
+                                    @elseif($listing->status->value === 'archived')
                                         <form method="POST" action="{{ route('my-listings.publish', $listing->slug) }}">
                                             @csrf
                                             @method('PATCH')
