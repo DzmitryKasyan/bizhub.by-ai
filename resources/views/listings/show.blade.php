@@ -362,13 +362,44 @@ $images = array_unique(array_filter($listing->images_array));
             @endif
 
             @if(count($dealProgress))
+            @php
+                $stageStatusStyles = [
+                    'pending' => [
+                        'badge' => 'bg-slate-100 text-slate-500',
+                        'dot' => 'border-2 border-slate-300 bg-white text-slate-400',
+                        'line' => 'bg-slate-200',
+                        'label' => 'text-slate-900',
+                    ],
+                    'in_progress' => [
+                        'badge' => 'bg-amber-100 text-amber-700',
+                        'dot' => 'border-2 border-amber-400 bg-amber-50 text-amber-500',
+                        'line' => 'bg-slate-200',
+                        'label' => 'text-slate-900',
+                    ],
+                    'done' => [
+                        'badge' => 'bg-emerald-100 text-emerald-700',
+                        'dot' => 'bg-emerald-500 text-white',
+                        'line' => 'bg-emerald-500',
+                        'label' => 'text-slate-900',
+                    ],
+                    'skipped' => [
+                        'badge' => 'bg-slate-100 text-slate-400',
+                        'dot' => 'bg-slate-200 text-slate-400',
+                        'line' => 'bg-slate-200',
+                        'label' => 'text-slate-400 line-through',
+                    ],
+                ];
+                $doneStagesCount = collect($dealProgress)->where('status', 'done')->count();
+                $dealProgressPercent = (int) round($doneStagesCount / count($dealProgress) * 100);
+                $canEditDealStages = $listing->isOwnedBy(auth()->user()) || auth()->user()->isModerator() || $hasSignedNda;
+            @endphp
             <div class="bg-white rounded-xl border border-slate-100 p-6">
-                <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center justify-between gap-3 mb-2">
                     <h2 class="text-lg font-semibold text-slate-900">Ход сделки</h2>
                     @if(count($participatingBuyers) > 1)
                         <form method="GET" class="flex items-center gap-2">
                             <label class="text-xs text-slate-500">Покупатель:</label>
-                            <select name="buyer_id" onchange="this.form.submit()" class="text-sm border-slate-200 rounded-lg">
+                            <select name="buyer_id" onchange="this.form.submit()" class="text-sm border-slate-200 rounded-lg py-1.5">
                                 @foreach($participatingBuyers as $buyerOption)
                                     <option value="{{ $buyerOption['id'] }}" {{ $selectedBuyer->id == $buyerOption['id'] ? 'selected' : '' }}>
                                         {{ $buyerOption['name'] }}
@@ -379,42 +410,73 @@ $images = array_unique(array_filter($listing->images_array));
                     @endif
                 </div>
 
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div class="h-full bg-emerald-500 rounded-full transition-all" style="width: {{ $dealProgressPercent }}%"></div>
+                    </div>
+                    <span class="text-xs text-slate-500 whitespace-nowrap">{{ $doneStagesCount }} из {{ count($dealProgress) }} этапов</span>
+                </div>
+
                 @if(count($participatingBuyers) > 0 && ($listing->isOwnedBy(auth()->user()) || auth()->user()->isModerator()))
-                    <p class="text-xs text-slate-500 mb-3">
-                        Вы редактируете статусы для покупателя <strong>{{ $selectedBuyer->name }}</strong>.
-                    </p>
+                    <div class="flex items-start gap-2 rounded-lg bg-primary-50 border border-primary-100 px-3 py-2 mb-4">
+                        <svg class="w-4 h-4 text-primary-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <p class="text-xs text-primary-700">
+                            Вы редактируете статусы для покупателя <strong>{{ $selectedBuyer->name }}</strong>.
+                        </p>
+                    </div>
                 @endif
 
-                <div class="space-y-3">
+                <ol>
                     @foreach($dealProgress as $stage)
-                        <div class="flex items-start gap-3">
-                            <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-{{ $stage['color'] }}-100 text-{{ $stage['color'] }}-700 mt-0.5">
-                                {{ $stage['status_label'] }}
-                            </span>
-                            <div class="flex-1">
-                                <p class="text-sm font-medium text-slate-900">{{ $stage['label'] }}</p>
-                                @if($stage['notes'])
-                                    <p class="text-xs text-slate-500">{{ $stage['notes'] }}</p>
+                        @php $stageStyle = $stageStatusStyles[$stage['status']] ?? $stageStatusStyles['pending']; @endphp
+                        <li class="relative flex gap-4 {{ $loop->last ? '' : 'pb-6' }}">
+                            @if(!$loop->last)
+                                <span class="absolute left-[15px] top-8 bottom-0 w-0.5 {{ $stageStyle['line'] }}"></span>
+                            @endif
+                            <div class="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full {{ $stageStyle['dot'] }}">
+                                @if($stage['status'] === 'done')
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                @elseif($stage['status'] === 'skipped')
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
+                                @else
+                                    <span class="text-xs font-semibold">{{ $loop->iteration }}</span>
                                 @endif
                             </div>
-                        </div>
+                            <div class="flex-1 min-w-0 pt-1">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <p class="text-sm font-medium {{ $stageStyle['label'] }}">{{ $stage['label'] }}</p>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ $stageStyle['badge'] }}">
+                                        {{ $stage['status_label'] }}
+                                    </span>
+                                </div>
+                                @if($stage['notes'])
+                                    <p class="text-xs text-slate-500 mt-1">{{ $stage['notes'] }}</p>
+                                @endif
 
-                        @if($listing->isOwnedBy(auth()->user()) || auth()->user()->isModerator() || $hasSignedNda)
-                            <form action="{{ route('listings.deal-stage.update', $listing) }}" method="POST" class="flex items-center gap-2 mt-2">
-                                @csrf
-                                <input type="hidden" name="buyer_id" value="{{ $selectedBuyer->id }}">
-                                <input type="hidden" name="stage" value="{{ $stage['stage'] }}">
-                                <select name="status" class="text-sm border-slate-200 rounded-lg">
-                                    @foreach([\App\Enums\DealStageStatus::Pending, \App\Enums\DealStageStatus::InProgress, \App\Enums\DealStageStatus::Done, \App\Enums\DealStageStatus::Skipped] as $statusOption)
-                                        <option value="{{ $statusOption->value }}" {{ $stage['status'] === $statusOption->value ? 'selected' : '' }}>{{ $statusOption->label() }}</option>
-                                    @endforeach
-                                </select>
-                                <input type="text" name="notes" value="{{ $stage['notes'] ?? '' }}" placeholder="Комментарий" class="text-sm border-slate-200 rounded-lg flex-1">
-                                <button type="submit" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-lg">OK</button>
-                            </form>
-                        @endif
+                                @if($canEditDealStages)
+                                    <form action="{{ route('listings.deal-stage.update', $listing) }}" method="POST" class="mt-2 flex flex-wrap items-center gap-2 rounded-lg bg-slate-50 border border-slate-100 p-2">
+                                        @csrf
+                                        <input type="hidden" name="buyer_id" value="{{ $selectedBuyer->id }}">
+                                        <input type="hidden" name="stage" value="{{ $stage['stage'] }}">
+                                        <select name="status" class="text-xs border-slate-200 rounded-md py-1.5 pl-2 pr-7 bg-white focus:ring-primary-300 focus:border-primary-300">
+                                            @foreach([\App\Enums\DealStageStatus::Pending, \App\Enums\DealStageStatus::InProgress, \App\Enums\DealStageStatus::Done, \App\Enums\DealStageStatus::Skipped] as $statusOption)
+                                                <option value="{{ $statusOption->value }}" {{ $stage['status'] === $statusOption->value ? 'selected' : '' }}>{{ $statusOption->label() }}</option>
+                                            @endforeach
+                                        </select>
+                                        <input type="text" name="notes" value="{{ $stage['notes'] ?? '' }}" placeholder="Комментарий" class="text-xs border-slate-200 rounded-md py-1.5 px-2 flex-1 min-w-[8rem] bg-white focus:ring-primary-300 focus:border-primary-300">
+                                        <button type="submit" class="text-xs font-medium bg-primary-600 hover:bg-primary-700 text-white px-3 py-1.5 rounded-md transition-colors">Сохранить</button>
+                                    </form>
+                                @endif
+                            </div>
+                        </li>
                     @endforeach
-                </div>
+                </ol>
             </div>
             @endif
         </div>
