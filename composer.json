@@ -6,7 +6,7 @@
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
-        "php": "^8.3",
+        "php": ">=8.4.27",
         "filament/filament": "^4.0",
         "http-interop/http-factory-guzzle": "^1.2",
         "intervention/image": "^4.1",
