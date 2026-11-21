@@ -49,3 +49,7 @@
 
 Все задачи выполнены.
 
+## Baseline тестов (2026-11-08)
+
+- Известных baseline-ошибок нет. После миграции на PHP 8.4.27 и свежих security-обновлений `php artisan test`: 72 passed, 160 assertions.
+
